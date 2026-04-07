@@ -1,0 +1,36 @@
+{
+    "name": "@repo/database",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts",
+        "./models/user.server": "./models/user.server.ts",
+        "./models/vehicle.server": "./models/vehicle.server.ts",
+        "./models/repair.server": "./models/repair.server.ts",
+        "./models/transaction.server": "./models/transaction.server.ts",
+        "./models/stats.server": "./models/stats.server.ts",
+        "./models/appointment.server": "./models/appointment.server.ts",
+        "./models/notification.server": "./models/notification.server.ts"
+    },
+    "scripts": {
+        "build": "prisma generate",
+        "db:generate": "prisma generate",
+        "db:push": "prisma db push",
+        "db:migrate": "prisma migrate dev",
+        "db:seed": "prisma db seed",
+        "db:studio": "prisma studio"
+    },
+    "prisma": {
+        "seed": "bun prisma/seed.ts"
+    },
+    "dependencies": {
+        "@prisma/client": "^6.5.0"
+    },
+    "devDependencies": {
+        "@repo/auth": "*",
+        "@repo/typescript-config": "*",
+        "prisma": "^6.5.0",
+        "tsx": "^4.21.0",
+        "typescript": "5.5.4"
+    }
+}

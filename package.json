@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "prettier": "^3.8.1",
+    "turbo": "^2.9.4"
+  },
+  "name": "stealthy-chicken",
+  "packageManager": "bun@1.2.17",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

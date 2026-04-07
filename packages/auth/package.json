@@ -1,0 +1,25 @@
+{
+    "name": "@repo/auth",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "exports": {
+        "./server": "./src/auth.server.ts",
+        "./client": "./src/auth-client.ts",
+        "./context": "./src/context.ts",
+        "./middleware": "./src/middleware.ts"
+    },
+    "scripts": {
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "better-auth": "^1.4.0"
+    },
+    "peerDependencies": {
+        "@repo/database": "*"
+    },
+    "devDependencies": {
+        "@repo/typescript-config": "*",
+        "typescript": "^5.7.2"
+    }
+}

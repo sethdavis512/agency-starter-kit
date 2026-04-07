@@ -1,0 +1,37 @@
+{
+    "name": "@repo/ui",
+    "version": "0.0.0",
+    "exports": {
+        "./app-link": "./components/AppLink.tsx",
+        "./button": "./components/Button.tsx",
+        "./card": "./components/Card.tsx",
+        "./container": "./components/Container.tsx",
+        "./header": "./components/Header.tsx",
+        "./main": "./components/Main.tsx",
+        "./footer": "./components/Footer.tsx",
+        "./heading": "./components/Heading.tsx",
+        "./table": "./components/Table.tsx",
+        "./pagination": "./components/Pagination.tsx",
+        "./signin-form": "./components/SignInForm.tsx",
+        "./signup-form": "./components/SignUpForm.tsx",
+        "./signout": "./components/SignOut.tsx",
+        "./status-badge": "./components/StatusBadge.tsx",
+        "./sidebar": "./components/Sidebar.tsx"
+    },
+    "license": "MIT",
+    "scripts": {
+        "lint": "eslint \"**/*.ts\""
+    },
+    "devDependencies": {
+        "@repo/eslint-config": "*",
+        "@repo/typescript-config": "*",
+        "eslint": "^8.57.0",
+        "@repo/auth": "*",
+        "typescript": "5.5.4"
+    },
+    "dependencies": {
+        "@tanstack/react-table": "^8.21.3",
+        "cva": "^1.0.0-beta.4",
+        "tailwind-merge": "^3.4.0"
+    }
+}
