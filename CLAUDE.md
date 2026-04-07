@@ -16,11 +16,18 @@ bun run dev --filter=portal
 bun run build --filter=portal
 bun run typecheck --filter=portal
 
+# CLI (run from repo root)
+bun run cli --help       # Show all commands
+bun run cli db:setup     # Generate + push + seed
+bun run cli db:status    # Check DB connectivity
+bun run cli user:list    # List users
+bun run cli add:route    # Scaffold a new route
+bun run cli deploy       # Deploy to Railway
+
 # Database (run from packages/database/)
 bunx prisma generate      # Generate Prisma client (also runs as part of turbo build)
 bunx prisma db push       # Push schema to database
 bunx prisma migrate dev   # Create migration
-bunx prisma db seed       # Seed database
 bunx prisma studio        # Visual database browser
 
 # Turbo filtered builds
@@ -34,6 +41,7 @@ Turborepo monorepo with two React Router 7 apps sharing packages.
 
 **Apps** (`apps/`):
 - `portal` and `admin` — React Router 7 + Vite + Tailwind v4, SSR enabled, build output in `build/`
+- `cli` — Commander.js CLI tool for DB, user, session, and deployment operations. Uses `bun build --compile` to produce a standalone binary. Run with `bun run cli <command>` during dev.
 
 **Packages** (`packages/`):
 - `@repo/database` — Prisma client + PostgreSQL schema. Exports singleton `PrismaClient`. The `build` script runs `prisma generate`, which Turbo runs before app builds via `dependsOn: ["^build"]`.

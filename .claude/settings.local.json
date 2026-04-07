@@ -7,7 +7,8 @@
       "Bash(wc -l /Users/seth/repositories/lone-star-ui/src/components/*/index.ts)",
       "Bash(head -20 /Users/seth/repositories/lone-star-ui/src/components/*/index.ts)",
       "Bash(npm view:*)",
-      "Bash(node -e \"require\\('esbuild'\\).version\")"
+      "Bash(node -e \"require\\('esbuild'\\).version\")",
+      "Bash(grep -E \"\\\\.\\(ts|tsx|js|jsx\\)$\")"
     ]
   }
 }
