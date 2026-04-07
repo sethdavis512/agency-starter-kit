@@ -1,22 +1,21 @@
 import type { PropsWithChildren } from 'react';
-import { Link, type LinkProps } from 'react-router';
-import { cva, cx } from '../utils/cva.config';
-import type { VariantProps } from 'cva';
+import { Link } from 'react-router';
+import { cva, type VariantProps } from 'cva';
+import { cn } from '../utils/cn';
 
 export const appLinkVariants = cva({
     base: 'hover:underline',
     variants: {
         variant: {
-            primary: 'text-amber-500',
-            secondary: 'text-slate-500',
+            primary: 'text-primary',
+            secondary: 'text-neutral/60',
             light: 'text-white underline',
-            dark: 'text-zinc-800 underline'
+            dark: 'text-neutral underline'
         }
     },
     defaultVariants: {
         variant: 'primary'
-    },
-    compoundVariants: []
+    }
 });
 
 interface AppLinkProps extends VariantProps<typeof appLinkVariants> {
@@ -30,10 +29,9 @@ export function AppLink({
     to,
     external = false,
     variant = 'primary',
-    className,
-    ...props
+    className
 }: PropsWithChildren<AppLinkProps>) {
-    const linkClassName = cx(appLinkVariants({ variant }), className);
+    const linkClassName = cn(appLinkVariants({ variant }), className);
 
     if (external) {
         return (
@@ -42,7 +40,6 @@ export function AppLink({
                 className={linkClassName}
                 target="_blank"
                 rel="noopener noreferrer"
-                {...props}
             >
                 {children}
             </a>
@@ -50,7 +47,7 @@ export function AppLink({
     }
 
     return (
-        <Link to={to} className={linkClassName} {...(props as LinkProps)}>
+        <Link to={to} className={linkClassName}>
             {children}
         </Link>
     );

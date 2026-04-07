@@ -1,0 +1,166 @@
+import { Autocomplete } from '@base-ui/react/autocomplete';
+import React from 'react';
+import { cn } from '../../utils/cn';
+
+export const AutocompleteRoot = Autocomplete.Root;
+export const AutocompleteValue = Autocomplete.Value;
+export const AutocompletePortal = Autocomplete.Portal;
+export const AutocompleteGroup = Autocomplete.Group;
+export const AutocompleteCollection = Autocomplete.Collection;
+
+export const AutocompleteInput = React.forwardRef<
+    HTMLInputElement,
+    React.ComponentPropsWithoutRef<typeof Autocomplete.Input>
+>(({ className, ...props }, ref) => (
+    <Autocomplete.Input
+        ref={ref}
+        className={cn(
+            'flex h-10 w-full rounded-md border border-neutral/25 bg-surface px-3.5 text-base text-neutral font-normal transition-colors placeholder:text-neutral/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary data-disabled:cursor-not-allowed data-disabled:opacity-50',
+            className
+        )}
+        {...props}
+    />
+));
+AutocompleteInput.displayName = 'AutocompleteInput';
+
+export const AutocompleteTrigger = React.forwardRef<
+    HTMLButtonElement,
+    React.ComponentPropsWithoutRef<typeof Autocomplete.Trigger>
+>(({ className, ...props }, ref) => (
+    <Autocomplete.Trigger
+        ref={ref}
+        className={cn(
+            'flex h-10 w-7 items-center justify-center rounded-r-md border-0 bg-transparent p-0 text-neutral/60 transition-colors hover:not-data-disabled:text-neutral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 data-disabled:opacity-50',
+            className
+        )}
+        {...props}
+    />
+));
+AutocompleteTrigger.displayName = 'AutocompleteTrigger';
+
+export const AutocompleteIcon = React.forwardRef<
+    HTMLSpanElement,
+    React.ComponentPropsWithoutRef<typeof Autocomplete.Icon>
+>(({ className, children, ...props }, ref) => (
+    <Autocomplete.Icon
+        ref={ref}
+        className={cn('flex items-center justify-center', className)}
+        {...props}
+    >
+        {children ?? (
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+            >
+                <polyline points="6 9 12 15 18 9" />
+            </svg>
+        )}
+    </Autocomplete.Icon>
+));
+AutocompleteIcon.displayName = 'AutocompleteIcon';
+
+export const AutocompleteClear = React.forwardRef<
+    HTMLButtonElement,
+    React.ComponentPropsWithoutRef<typeof Autocomplete.Clear>
+>(({ className, ...props }, ref) => (
+    <Autocomplete.Clear
+        ref={ref}
+        className={cn(
+            'flex h-10 w-7 items-center justify-center rounded-md border-0 bg-transparent p-0 text-neutral/50 transition-colors hover:not-data-disabled:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1',
+            className
+        )}
+        {...props}
+    />
+));
+AutocompleteClear.displayName = 'AutocompleteClear';
+
+export const AutocompletePositioner = React.forwardRef<
+    HTMLDivElement,
+    React.ComponentPropsWithoutRef<typeof Autocomplete.Positioner>
+>(({ className, ...props }, ref) => (
+    <Autocomplete.Positioner
+        ref={ref}
+        className={cn('z-50 outline-none', className)}
+        sideOffset={4}
+        {...props}
+    />
+));
+AutocompletePositioner.displayName = 'AutocompletePositioner';
+
+export const AutocompletePopup = React.forwardRef<
+    HTMLDivElement,
+    React.ComponentPropsWithoutRef<typeof Autocomplete.Popup>
+>(({ className, ...props }, ref) => (
+    <Autocomplete.Popup
+        ref={ref}
+        className={cn(
+            'w-(--anchor-width) max-h-[min(var(--available-height),22rem)] max-w-(--available-width) overflow-y-auto scroll-py-2 overscroll-contain rounded-lg border border-neutral/15 bg-surface py-1.5 shadow-lg shadow-neutral/10 origin-(--transform-origin) transition-[transform,scale,opacity] duration-100 data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0',
+            className
+        )}
+        {...props}
+    />
+));
+AutocompletePopup.displayName = 'AutocompletePopup';
+
+export const AutocompleteList = React.forwardRef<
+    HTMLDivElement,
+    React.ComponentPropsWithoutRef<typeof Autocomplete.List>
+>(({ className, ...props }, ref) => (
+    <Autocomplete.List
+        ref={ref}
+        className={cn('outline-none data-empty:p-0', className)}
+        {...props}
+    />
+));
+AutocompleteList.displayName = 'AutocompleteList';
+
+export const AutocompleteItem = React.forwardRef<
+    HTMLDivElement,
+    React.ComponentPropsWithoutRef<typeof Autocomplete.Item>
+>(({ className, ...props }, ref) => (
+    <Autocomplete.Item
+        ref={ref}
+        className={cn(
+            'relative grid cursor-default select-none grid-cols-[0.875rem_1fr] items-center gap-2 px-3 py-2 text-sm text-neutral outline-none data-disabled:pointer-events-none data-disabled:opacity-50',
+            'data-highlighted:before:absolute data-highlighted:before:inset-x-1.5 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:rounded-md data-highlighted:before:bg-neutral data-highlighted:before:content-[""] data-highlighted:relative data-highlighted:z-0 data-highlighted:text-white',
+            className
+        )}
+        {...props}
+    />
+));
+AutocompleteItem.displayName = 'AutocompleteItem';
+
+export const AutocompleteEmpty = React.forwardRef<
+    HTMLDivElement,
+    React.ComponentPropsWithoutRef<typeof Autocomplete.Empty>
+>(({ className, ...props }, ref) => (
+    <Autocomplete.Empty
+        ref={ref}
+        className={cn('px-4 py-3 text-sm text-neutral/60 italic', className)}
+        {...props}
+    />
+));
+AutocompleteEmpty.displayName = 'AutocompleteEmpty';
+
+export const AutocompleteGroupLabel = React.forwardRef<
+    HTMLDivElement,
+    React.ComponentPropsWithoutRef<typeof Autocomplete.GroupLabel>
+>(({ className, ...props }, ref) => (
+    <Autocomplete.GroupLabel
+        ref={ref}
+        className={cn(
+            'sticky top-0 z-1 bg-surface px-3 pb-1 pt-2.5 text-[0.65rem] font-semibold uppercase tracking-widest text-neutral/50',
+            className
+        )}
+        {...props}
+    />
+));
+AutocompleteGroupLabel.displayName = 'AutocompleteGroupLabel';

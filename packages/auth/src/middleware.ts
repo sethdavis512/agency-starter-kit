@@ -4,14 +4,14 @@ import { userContext } from './context';
 
 /**
  * Middleware to check if user is authenticated.
- * If not authenticated, redirects to /signin.
+ * If not authenticated, redirects to /sign-in.
  * If authenticated, sets user in context for downstream loaders/actions.
  */
 export async function requireAuth({ request, context }: any) {
     const session = await auth.api.getSession({ headers: request.headers });
 
     if (!session) {
-        throw redirect('/signin');
+        throw redirect('/sign-in');
     }
 
     context.set(userContext, session.user);

@@ -8,13 +8,13 @@ import {
 export default [
     route('api/auth/*', './routes/api-auth.tsx'),
     layout('./routes/site-layout.tsx', [
+        index('routes/landing.tsx'),
         layout('./routes/protected-layout.tsx', [
-            index('routes/dashboard.tsx'),
+            route('dashboard', './routes/dashboard.tsx'),
             route('profile', './routes/profile.tsx')
         ]),
-        route('signin', './routes/signin.tsx'),
-        route('signup', './routes/signup.tsx'),
-        route('signout', './routes/signout.tsx'),
-        route('no-access', './routes/no-access.tsx')
+        route('sign-in', './routes/sign-in.tsx'),
+        route('sign-up', './routes/sign-up.tsx'),
+        route('sign-out', './routes/sign-out.tsx')
     ])
 ] satisfies RouteConfig;

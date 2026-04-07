@@ -2,9 +2,9 @@ import type { Route } from './+types/profile';
 import { userContext } from '@repo/auth/context';
 import { prisma } from '@repo/database';
 import { Card } from '@repo/ui/card';
-import { Heading } from '@repo/ui/heading';
-import { formatDate } from '@repo/utils/date';
+import { PageHeader } from '@repo/ui/page-header';
 import { User, Mail, Calendar } from '@repo/utils/icons';
+import { formatDate } from '@repo/utils/date';
 
 export async function loader({ context }: Route.LoaderArgs) {
     const sessionUser = context.get(userContext);
@@ -35,19 +35,14 @@ export default function ProfileRoute({ loaderData }: Route.ComponentProps) {
     return (
         <>
             <title>Profile | Stealthy Chicken</title>
-            <Heading size="xl" bold className="mb-6">
-                My Profile
-            </Heading>
+            <PageHeader title="My Profile" className="mb-6" />
 
             <Card className="max-w-md">
                 <div className="flex items-center gap-4 mb-6">
                     <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center">
                         <User className="h-8 w-8 text-amber-600" />
                     </div>
-                    <div>
-                        <h2 className="text-xl font-semibold">{user.name}</h2>
-                        <p className="text-zinc-500 text-sm">Customer</p>
-                    </div>
+                    <h2 className="text-xl font-semibold">{user.name}</h2>
                 </div>
 
                 <div className="space-y-4">

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { authClient } from '@repo/auth/client';
 import { Card } from './Card';
 import { Button } from './Button';
+import { Input } from './Input';
+import { FieldRoot, FieldLabel } from './Field';
 import { AppLink } from './AppLink';
 
 interface SignInFormProps {
@@ -45,60 +47,48 @@ export function SignInForm({ onSuccess, onError }: SignInFormProps) {
         <div className="flex-1 flex items-center justify-center my-8">
             <Card className="max-w-md w-full space-y-8 p-8">
                 <div>
-                    <h2 className="text-center text-3xl font-bold">Sign In</h2>
+                    <h2 className="text-center text-3xl font-bold text-neutral">
+                        Sign In
+                    </h2>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     {error && (
-                        <div className="text-red-600 text-sm text-center">
+                        <div className="text-danger text-sm text-center">
                             {error}
                         </div>
                     )}
                     <div className="space-y-4">
-                        <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium"
-                            >
-                                Email
-                            </label>
-                            <input
-                                id="email"
+                        <FieldRoot>
+                            <FieldLabel>Email</FieldLabel>
+                            <Input
                                 type="email"
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="mt-1 block w-full px-3 py-2 border border-zinc-300 rounded-md"
                             />
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium"
-                            >
-                                Password
-                            </label>
-                            <input
-                                id="password"
+                        </FieldRoot>
+                        <FieldRoot>
+                            <FieldLabel>Password</FieldLabel>
+                            <Input
                                 type="password"
                                 required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="mt-1 block w-full px-3 py-2 border border-zinc-300 rounded-md"
                             />
-                        </div>
+                        </FieldRoot>
                     </div>
                     <div>
                         <Button
                             type="submit"
                             disabled={loading}
-                            fullWidth
+                            className="w-full"
                             size="md"
                         >
                             {loading ? 'Signing in...' : 'Sign In'}
                         </Button>
                     </div>
                     <div className="text-center text-sm">
-                        <AppLink to="/signup" variant="dark">
+                        <AppLink to="/sign-up" variant="dark">
                             Don't have an account? Sign up
                         </AppLink>
                     </div>

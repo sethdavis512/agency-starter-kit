@@ -7,17 +7,15 @@ interface SignOutProps {
 
 export function SignOut({ onSuccess }: SignOutProps) {
     useEffect(() => {
-        async function signOut() {
-            await authClient.signOut({
-                fetchOptions: {
-                    onSuccess: () => {
-                        onSuccess?.();
-                    }
+        authClient.signOut({
+            fetchOptions: {
+                onSuccess: () => {
+                    onSuccess?.();
                 }
-            });
-        }
-        signOut();
-    }, [onSuccess]);
+            }
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div className="min-h-screen flex items-center justify-center">

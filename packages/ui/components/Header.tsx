@@ -1,15 +1,15 @@
 import { Link } from 'react-router';
-import type { VariantProps } from 'cva';
+import { cva, type VariantProps } from 'cva';
 import { UserIcon, Menu } from '@repo/utils/icons';
-import { cva, cx } from '../utils/cva.config';
+import { cn } from '../utils/cn';
 import { Container } from './Container';
 
 export const headerVariants = cva({
     base: 'mb-2 p-4 text-white',
     variants: {
         variant: {
-            admin: 'bg-slate-800',
-            portal: 'bg-amber-500'
+            admin: 'bg-neutral',
+            portal: 'bg-secondary'
         }
     }
 });
@@ -29,7 +29,7 @@ export function Header({
     children
 }: HeaderProps) {
     return (
-        <header className={cx(headerVariants({ variant }), className)}>
+        <header className={cn(headerVariants({ variant }), className)}>
             <Container className="flex justify-between items-center">
                 <div className="flex items-center gap-6">
                     {onMenuToggle && (

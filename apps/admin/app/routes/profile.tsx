@@ -2,7 +2,7 @@ import type { Route } from './+types/profile';
 import { userContext } from '@repo/auth/context';
 import { prisma } from '@repo/database';
 import { Card } from '@repo/ui/card';
-import { Heading } from '@repo/ui/heading';
+import { PageHeader } from '@repo/ui/page-header';
 import { User, Mail, Calendar, Shield } from '@repo/utils/icons';
 import { formatDate } from '@repo/utils/date';
 
@@ -36,9 +36,7 @@ export default function ProfileRoute({ loaderData }: Route.ComponentProps) {
     return (
         <>
             <title>Profile | Stealthy Chicken Admin</title>
-            <Heading size="xl" bold className="mb-6">
-                My Profile
-            </Heading>
+            <PageHeader title="My Profile" className="mb-6" />
 
             <Card className="max-w-md">
                 <div className="flex items-center gap-4 mb-6">

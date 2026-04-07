@@ -72,7 +72,7 @@ Make sure to deploy the output of `bun run build`
 
 ```
 ├── package.json
-├── bun.lockb
+├── bun.lock
 ├── build/
 │   ├── client/    # Static assets
 │   └── server/    # Server-side code

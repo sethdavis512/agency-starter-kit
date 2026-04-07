@@ -37,8 +37,7 @@ Turborepo monorepo with two React Router 7 apps sharing packages.
 
 **Packages** (`packages/`):
 - `@repo/database` — Prisma client + PostgreSQL schema. Exports singleton `PrismaClient`. The `build` script runs `prisma generate`, which Turbo runs before app builds via `dependsOn: ["^build"]`.
-- `@repo/ui` — Shared React components using CVA + tailwind-merge. Exports raw `.tsx` files (no build step). Components are exported individually via package.json `exports` (e.g., `"./card": "./components/Card.tsx"`).
-- `@repo/theme` — Shared Tailwind v4 theme CSS (`theme.css`). Imported by each app's `app.css` via relative path.
+- `@repo/ui` — Component library (43 components) using Base UI primitives, CVA variants, and OKLCH design tokens (primary, secondary, accent, neutral, muted, danger, surface). Exports raw `.tsx` files (no build step). Components are exported individually via package.json `exports` (e.g., `"./button": "./components/Button/index.ts"`). Also exports `theme.css` with token definitions and dark mode support.
 - `@repo/typescript-config` — Shared tsconfig presets (`base.json`, `vite.json`)
 - `@repo/eslint-config` — Shared ESLint configuration
 
@@ -55,10 +54,10 @@ Turborepo monorepo with two React Router 7 apps sharing packages.
 Each app's `app.css` must include:
 ```css
 @import "tailwindcss";
-@import "../../../packages/theme/theme.css";
+@import "../../../packages/ui/theme.css";
 @source "../../../packages/ui";
 ```
-The `@source` directive tells Tailwind v4 to scan the UI package for classes. Paths are relative to the CSS file (`apps/*/app/`), requiring three `../` to reach the repo root.
+The `@source` directive tells Tailwind v4 to scan the UI package for classes. The theme import registers OKLCH design tokens. Paths are relative to the CSS file (`apps/*/app/`), requiring three `../` to reach the repo root.
 
 ## Deployment
 

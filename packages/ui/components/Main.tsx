@@ -1,10 +1,10 @@
 import type { PropsWithChildren } from 'react';
-import { cx } from '../utils/cva.config';
+import { cn } from '../utils/cn';
 
 interface MainProps {
     className?: string;
 }
 
 export function Main({ children, className }: PropsWithChildren<MainProps>) {
-    return <main className={cx('', className)}>{children}</main>;
+    return <main className={cn('', className)}>{children}</main>;
 }

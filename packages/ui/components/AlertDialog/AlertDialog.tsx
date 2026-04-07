@@ -1,0 +1,105 @@
+import { AlertDialog as BaseAlertDialog } from '@base-ui/react/alert-dialog';
+import React from 'react';
+import { cn } from '../../utils/cn';
+
+export const AlertDialogRoot = BaseAlertDialog.Root;
+export const AlertDialogPortal = BaseAlertDialog.Portal;
+
+export const AlertDialogBackdrop = React.forwardRef<
+    HTMLDivElement,
+    React.ComponentPropsWithoutRef<typeof BaseAlertDialog.Backdrop>
+>(({ className, ...props }, ref) => (
+    <BaseAlertDialog.Backdrop
+        ref={ref}
+        className={cn(
+            'fixed inset-0 z-50 min-h-dvh bg-black/40 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 supports-[-webkit-touch-callout:none]:absolute',
+            className
+        )}
+        {...props}
+    />
+));
+AlertDialogBackdrop.displayName = 'AlertDialogBackdrop';
+
+export const AlertDialogViewport = React.forwardRef<
+    HTMLDivElement,
+    React.ComponentPropsWithoutRef<typeof BaseAlertDialog.Viewport>
+>(({ className, ...props }, ref) => (
+    <BaseAlertDialog.Viewport
+        ref={ref}
+        className={cn(
+            'fixed inset-0 z-50 flex items-center justify-center p-4',
+            className
+        )}
+        {...props}
+    />
+));
+AlertDialogViewport.displayName = 'AlertDialogViewport';
+
+export const AlertDialogPopup = React.forwardRef<
+    HTMLDivElement,
+    React.ComponentPropsWithoutRef<typeof BaseAlertDialog.Popup>
+>(({ className, ...props }, ref) => (
+    <BaseAlertDialog.Popup
+        ref={ref}
+        className={cn(
+            'w-full max-w-md rounded-xl border border-neutral/15 bg-surface p-6 text-neutral shadow-xl transition-all duration-150 data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0',
+            className
+        )}
+        {...props}
+    />
+));
+AlertDialogPopup.displayName = 'AlertDialogPopup';
+
+export const AlertDialogTitle = React.forwardRef<
+    HTMLHeadingElement,
+    React.ComponentPropsWithoutRef<typeof BaseAlertDialog.Title>
+>(({ className, ...props }, ref) => (
+    <BaseAlertDialog.Title
+        ref={ref}
+        className={cn('mb-1 text-lg font-semibold text-neutral', className)}
+        {...props}
+    />
+));
+AlertDialogTitle.displayName = 'AlertDialogTitle';
+
+export const AlertDialogDescription = React.forwardRef<
+    HTMLParagraphElement,
+    React.ComponentPropsWithoutRef<typeof BaseAlertDialog.Description>
+>(({ className, ...props }, ref) => (
+    <BaseAlertDialog.Description
+        ref={ref}
+        className={cn('mb-6 text-sm text-neutral/60', className)}
+        {...props}
+    />
+));
+AlertDialogDescription.displayName = 'AlertDialogDescription';
+
+export const AlertDialogClose = React.forwardRef<
+    HTMLButtonElement,
+    React.ComponentPropsWithoutRef<typeof BaseAlertDialog.Close>
+>(({ className, ...props }, ref) => (
+    <BaseAlertDialog.Close
+        ref={ref}
+        className={cn(
+            'inline-flex h-9 items-center justify-center rounded-md border border-neutral/25 bg-surface px-4 text-sm font-medium text-neutral transition-colors select-none hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+            className
+        )}
+        {...props}
+    />
+));
+AlertDialogClose.displayName = 'AlertDialogClose';
+
+export const AlertDialogTrigger = React.forwardRef<
+    HTMLButtonElement,
+    React.ComponentPropsWithoutRef<typeof BaseAlertDialog.Trigger>
+>(({ className, ...props }, ref) => (
+    <BaseAlertDialog.Trigger
+        ref={ref}
+        className={cn(
+            'inline-flex h-9 items-center justify-center rounded-md border border-danger/40 bg-surface px-4 text-sm font-medium text-danger transition-colors select-none hover:bg-danger/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger focus-visible:ring-offset-2',
+            className
+        )}
+        {...props}
+    />
+));
+AlertDialogTrigger.displayName = 'AlertDialogTrigger';

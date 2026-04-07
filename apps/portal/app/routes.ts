@@ -8,24 +8,13 @@ import {
 export default [
     route('api/auth/*', './routes/api-auth.tsx'),
     layout('./routes/site-layout.tsx', [
+        index('routes/landing.tsx'),
         layout('./routes/protected-layout.tsx', [
-            index('routes/repairs.tsx'),
-            route('repairs/:id', './routes/repair-detail.tsx'),
-            route('vehicles', './routes/vehicles.tsx'),
-            route('vehicles/new', './routes/vehicle-new.tsx'),
-            route('vehicles/:id', './routes/vehicle-detail.tsx'),
-            route('vehicles/:id/edit', './routes/vehicle-edit.tsx'),
-            route(
-                'vehicles/:id/appointments/new',
-                './routes/vehicle-new-appointment.tsx'
-            ),
-            route('appointments', './routes/appointments.tsx'),
-            route('appointments/new', './routes/appointment-new.tsx'),
-            route('notifications', './routes/notifications.tsx'),
+            route('dashboard', './routes/dashboard.tsx'),
             route('profile', './routes/profile.tsx')
         ]),
-        route('signin', './routes/signin.tsx'),
-        route('signup', './routes/signup.tsx'),
-        route('signout', './routes/signout.tsx')
+        route('sign-in', './routes/sign-in.tsx'),
+        route('sign-up', './routes/sign-up.tsx'),
+        route('sign-out', './routes/sign-out.tsx')
     ])
 ] satisfies RouteConfig;

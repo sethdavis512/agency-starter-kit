@@ -1,60 +1,23 @@
 generator client {
-    provider = "prisma-client-js"
+    provider = "prisma-client"
+    output   = "../generated/prisma"
 }
 
 datasource db {
     provider = "postgresql"
-    url      = env("DATABASE_URL")
-}
-
-enum RepairStatus {
-    PENDING
-    QUOTED
-    APPROVED
-    IN_PROGRESS
-    COMPLETED
-    PAID
-    CANCELLED
-}
-
-enum PaymentMethod {
-    CASH
-    CARD
-    CHECK
-    OTHER
-}
-
-enum AppointmentType {
-    DROP_OFF
-    PICKUP
-    INSPECTION
-}
-
-enum AppointmentStatus {
-    SCHEDULED
-    CONFIRMED
-    IN_PROGRESS
-    COMPLETED
-    CANCELLED
-    NO_SHOW
 }
 
 model User {
-    id            String         @id @default(cuid())
+    id            String    @id @default(cuid())
     name          String
-    email         String         @unique
-    emailVerified Boolean        @default(false)
+    email         String    @unique
+    emailVerified Boolean   @default(false)
     image         String?
-    role          String         @default("user")
-    phone         String?
-    createdAt     DateTime       @default(now())
-    updatedAt     DateTime       @updatedAt
+    role          String    @default("user")
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
     sessions      Session[]
     accounts      Account[]
-    vehicles      Vehicle[]
-    repairs       Repair[]
-    appointments  Appointment[]
-    notifications Notification[]
 
     @@map("user")
 }
@@ -104,98 +67,4 @@ model Verification {
 
     @@index([identifier])
     @@map("verification")
-}
-
-model Vehicle {
-    id           String        @id @default(cuid())
-    year         Int
-    make         String
-    model        String
-    vin          String?
-    color        String?
-    userId       String
-    user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-    repairs      Repair[]
-    appointments Appointment[]
-    createdAt    DateTime      @default(now())
-    updatedAt    DateTime      @updatedAt
-
-    @@index([userId])
-    @@map("vehicle")
-}
-
-model Repair {
-    id                  String        @id @default(cuid())
-    status              RepairStatus  @default(PENDING)
-    description         String
-    notes               String?
-    quoteAmount         Float?
-    quoteDescription    String?
-    quoteApprovedAt     DateTime?
-    scheduledDropOff    DateTime?
-    scheduledPickup     DateTime?
-    estimatedCompletion DateTime?
-    userId              String
-    user                User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-    vehicleId           String
-    vehicle             Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-    transaction         Transaction?
-    appointments        Appointment[]
-    createdAt           DateTime      @default(now())
-    updatedAt           DateTime      @updatedAt
-
-    @@index([userId])
-    @@index([vehicleId])
-    @@index([status])
-    @@map("repair")
-}
-
-model Transaction {
-    id        String        @id @default(cuid())
-    amount    Float
-    method    PaymentMethod @default(CASH)
-    note      String?
-    repairId  String        @unique
-    repair    Repair        @relation(fields: [repairId], references: [id], onDelete: Cascade)
-    createdAt DateTime      @default(now())
-
-    @@map("transaction")
-}
-
-model Appointment {
-    id           String            @id @default(cuid())
-    scheduledFor DateTime
-    type         AppointmentType   @default(DROP_OFF)
-    status       AppointmentStatus @default(SCHEDULED)
-    notes        String?
-    userId       String
-    user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-    vehicleId    String
-    vehicle      Vehicle           @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-    repairId     String?
-    repair       Repair?           @relation(fields: [repairId], references: [id], onDelete: SetNull)
-    createdAt    DateTime          @default(now())
-    updatedAt    DateTime          @updatedAt
-
-    @@index([userId])
-    @@index([vehicleId])
-    @@index([repairId])
-    @@index([status])
-    @@index([scheduledFor])
-    @@map("appointment")
-}
-
-model Notification {
-    id        String   @id @default(cuid())
-    title     String
-    message   String
-    read      Boolean  @default(false)
-    userId    String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    repairId  String?
-    createdAt DateTime @default(now())
-
-    @@index([userId])
-    @@index([userId, read])
-    @@map("notification")
 }

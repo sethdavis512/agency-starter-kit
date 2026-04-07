@@ -3,7 +3,11 @@
     "allow": [
       "mcp__context7__resolve-library-id",
       "Skill(agent-browser)",
-      "Skill(agent-browser:*)"
+      "Skill(agent-browser:*)",
+      "Bash(wc -l /Users/seth/repositories/lone-star-ui/src/components/*/index.ts)",
+      "Bash(head -20 /Users/seth/repositories/lone-star-ui/src/components/*/index.ts)",
+      "Bash(npm view:*)",
+      "Bash(node -e \"require\\('esbuild'\\).version\")"
     ]
   }
 }

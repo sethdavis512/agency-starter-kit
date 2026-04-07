@@ -1,0 +1,39 @@
+/* Agency Starter Kit — Tailwind v4 theme preset
+ *
+ * Import this file in consuming apps that also use Tailwind v4 so that
+ * the design tokens are registered for utility generation
+ * (e.g. `text-primary/65`, `border-neutral/12`) without duplicating values.
+ *
+ * Usage:
+ *   @import '@repo/ui/theme';
+ *   @import 'tailwindcss';
+ */
+
+/* Dark mode: class-based toggle */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+
+    --color-primary: oklch(55% 0.22 264);     /* rich indigo          */
+    --color-secondary: oklch(68% 0.16 32);    /* warm coral           */
+    --color-accent: oklch(64% 0.19 158);      /* emerald green        */
+    --color-neutral: oklch(32% 0.02 260);     /* cool charcoal        */
+    --color-muted: oklch(94% 0.008 260);      /* soft cool gray       */
+    --color-danger: oklch(57% 0.21 24);       /* crimson red          */
+    --color-surface: #ffffff;
+}
+
+/* Dark Theme */
+.dark {
+    --color-primary: oklch(68% 0.18 264);
+    --color-secondary: oklch(74% 0.14 32);
+    --color-accent: oklch(72% 0.16 158);
+    --color-neutral: oklch(88% 0.01 260);
+    --color-muted: oklch(24% 0.015 260);
+    --color-danger: oklch(65% 0.18 24);
+    --color-surface: oklch(16% 0.015 260);
+    --tw-ring-offset-color: var(--color-surface);
+}
