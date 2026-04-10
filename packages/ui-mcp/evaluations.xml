@@ -1,0 +1,42 @@
+<evaluation>
+  <qa_pair>
+    <question>Compare the OKLCH lightness values of every @repo/ui color token across its light and dark mode definitions. Which single token has the largest absolute change in lightness (L) between the two modes? Answer with only the token's short name (no prefix, no dashes).</question>
+    <answer>muted</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Of all the OKLCH color tokens exposed by the @repo/ui design system, which one has the highest chroma (C) value in its LIGHT mode definition? Answer with only the token's short name.</question>
+    <answer>primary</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Among the @repo/ui components that define CVA variants, exactly one component defines the greatest TOTAL number of variant options when summed across all its variant axes (for example, a component with a 5-value variant axis and a 3-value size axis would total 8). Which component is it? Answer with the component's import subpath (for example, 'button').</question>
+    <answer>avatar</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>The Dialog component in @repo/ui is implemented as a compound component with multiple named sub-parts. How many distinct exported symbols does the Dialog component's source file declare? Answer with a number only.</question>
+    <answer>9</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Exactly one of the @repo/ui components that uses CVA does NOT specify any default variant values (its defaultVariants object is empty, meaning the component has no implicit fallback for its variant axes). Which component is it? Answer with its import subpath only.</question>
+    <answer>header</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>If a developer writes the Tailwind class name 'border-zinc-300' inside a React component and submits that snippet to the @repo/ui validation tool, what exact token-based utility class does the validator suggest as a replacement? Answer with the exact suggested class string (example format: 'bg-example').</question>
+    <answer>border-neutral</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>How many total @repo/ui components do NOT define any CVA variants at all? This count includes compound components (such as Dialog), simple layout wrappers (such as Container), and any other components whose source files contain no cva() call. Answer with a number only.</question>
+    <answer>45</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>How many @repo/ui components wrap a primitive imported from the '@base-ui/react' package family? Count each component that imports a primitive from any '@base-ui/react/...' subpath exactly once. Answer with a number only.</question>
+    <answer>35</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Among all @repo/ui color tokens, which one has the LOWEST chroma (C) value in light mode? This token is the least saturated color in the palette's light theme. Answer with only the token's short name.</question>
+    <answer>muted</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>The 'surface' token in @repo/ui is unusual because its light-mode value is NOT declared using the OKLCH color space, unlike every other color token in the @theme block. What exact raw CSS value is assigned to --color-surface inside the light @theme block? Answer with the exact value as it appears in theme.css (for example, '#abcdef' or 'transparent').</question>
+    <answer>#ffffff</answer>
+  </qa_pair>
+</evaluation>

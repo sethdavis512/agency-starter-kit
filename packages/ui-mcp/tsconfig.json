@@ -1,0 +1,12 @@
+{
+    "extends": "@repo/typescript-config/base.json",
+    "compilerOptions": {
+        "target": "ES2022",
+        "outDir": "dist",
+        "rootDir": "src",
+        "types": ["bun-types"],
+        "resolveJsonModule": true
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
+}
