@@ -1,0 +1,280 @@
+# Adding a Docusaurus 3 App
+
+This guide covers adding a Docusaurus 3 site to the monorepo. Docusaurus
+is the right pick when the whole app is documentation, especially if you
+need versioning, i18n, MDX, a built-in search, or a conventional sidebar
+layout out of the box.
+
+> Before you start, read [apps/README.md](../../apps/README.md) for the
+> contract every app must satisfy. This guide fills in the Docusaurus
+> specifics.
+
+## A note on sharing `@repo/ui`
+
+Docusaurus is the one framework in this kit where **sharing `@repo/ui` is
+not recommended**. Three reasons:
+
+1. Docusaurus has its own Webpack + MDX pipeline that does not run the
+   Tailwind v4 `@source` directive.
+2. Docusaurus's dark mode uses `[data-theme='dark']`, not the `.dark`
+   class scope used by `@repo/ui/theme.css`.
+3. Docusaurus components are designed to be styled via its Infima CSS
+   variables and swizzling, not utility classes.
+
+Leave the docs site stylistically isolated. Use Docusaurus's own theme
+and CSS variables. If you need brand alignment, copy the OKLCH colors
+from `packages/ui/theme.css` into `src/css/custom.css` as CSS variables
+that override Infima tokens.
+
+## 1. Scaffold the directory
+
+The fastest path is the official scaffolder:
+
+```bash
+bunx create-docusaurus@latest apps/docs classic --typescript
+```
+
+Then:
+
+1. Delete the nested `apps/docs/bun.lock` (or `package-lock.json`) so
+   the workspace uses the root lockfile.
+2. Align the React deps to match the rest of the monorepo (see the
+   `package.json` template below).
+3. Run `bun install` from the repo root.
+
+Target layout:
+
+```
+apps/docs/
+  docs/                        # markdown content
+  src/
+    css/
+      custom.css
+  static/
+    img/
+  docusaurus.config.ts
+  sidebars.ts
+  tsconfig.json
+  package.json
+```
+
+## 2. `apps/docs/package.json`
+
+```json
+{
+    "name": "docs",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "docusaurus": "docusaurus",
+        "dev": "docusaurus start --host 0.0.0.0 --port 5550",
+        "start": "docusaurus serve --host 0.0.0.0 --port ${PORT:-5550} --no-open",
+        "build": "docusaurus build",
+        "swizzle": "docusaurus swizzle",
+        "deploy": "docusaurus deploy",
+        "clear": "docusaurus clear",
+        "serve": "docusaurus serve",
+        "write-translations": "docusaurus write-translations",
+        "write-heading-ids": "docusaurus write-heading-ids",
+        "typecheck": "tsc"
+    },
+    "dependencies": {
+        "@docusaurus/core": "^3.9.0",
+        "@docusaurus/preset-classic": "^3.9.0",
+        "@mdx-js/react": "^3.0.0",
+        "clsx": "^2.1.1",
+        "prism-react-renderer": "^2.4.0",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4"
+    },
+    "devDependencies": {
+        "@docusaurus/module-type-aliases": "^3.9.0",
+        "@docusaurus/tsconfig": "^3.9.0",
+        "@docusaurus/types": "^3.9.0",
+        "typescript": "~5.6.0"
+    },
+    "engines": {
+        "node": ">=18.0"
+    }
+}
+```
+
+Notes:
+
+- Docusaurus 3.7+ officially supports React 19 in its peer
+  dependencies, so you can pin React to 19.2.4 to match `portal` and
+  `admin`.
+- `dev` is aliased to `docusaurus start` so Turbo's `dev` task is
+  consistent across all apps.
+- `start` is aliased to `docusaurus serve` because Railway's start
+  command runs after `build`, and `docusaurus serve` is the right
+  production entrypoint for the built `build/` directory.
+- Avoid `@docusaurus/plugin-ideal-image`. It has transitive issues with
+  React 19 via `react-waypoint`.
+
+## 3. `apps/docs/docusaurus.config.ts`
+
+Minimal config:
+
+```ts
+import type { Config } from '@docusaurus/types';
+import type * as Preset from '@docusaurus/preset-classic';
+import { themes as prismThemes } from 'prism-react-renderer';
+
+const config: Config = {
+    title: 'Agency Docs',
+    tagline: 'How the agency starter kit works',
+    url: 'https://docs.example.com',
+    baseUrl: '/',
+    favicon: 'img/favicon.ico',
+    onBrokenLinks: 'throw',
+    onBrokenMarkdownLinks: 'warn',
+    i18n: { defaultLocale: 'en', locales: ['en'] },
+    presets: [
+        [
+            'classic',
+            {
+                docs: {
+                    sidebarPath: './sidebars.ts',
+                    routeBasePath: '/',
+                },
+                blog: false,
+                theme: {
+                    customCss: './src/css/custom.css',
+                },
+            } satisfies Preset.Options,
+        ],
+    ],
+    themeConfig: {
+        navbar: {
+            title: 'Agency Docs',
+            items: [],
+        },
+        prism: {
+            theme: prismThemes.github,
+            darkTheme: prismThemes.dracula,
+        },
+    } satisfies Preset.ThemeConfig,
+};
+
+export default config;
+```
+
+## 4. `apps/docs/sidebars.ts`
+
+```ts
+import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
+
+const sidebars: SidebarsConfig = {
+    docsSidebar: [{ type: 'autogenerated', dirName: '.' }],
+};
+
+export default sidebars;
+```
+
+## 5. `apps/docs/tsconfig.json`
+
+Extend Docusaurus's preset, **not** `@repo/typescript-config`. The
+Docusaurus preset sets up JSX, module, and lib fields that the starter
+kit's base config is not built around.
+
+```json
+{
+    "extends": "@docusaurus/tsconfig",
+    "compilerOptions": {
+        "baseUrl": "."
+    },
+    "include": ["src/", "docusaurus.config.ts", "sidebars.ts"]
+}
+```
+
+## 6. Update `turbo.json`
+
+Docusaurus writes its final site to `build/` (already covered) and keeps
+a generated scratch directory at `.docusaurus/`. Add it to the root
+`turbo.json`:
+
+```json
+{
+    "tasks": {
+        "build": {
+            "outputs": [
+                "dist/**",
+                "build/**",
+                "generated/**",
+                ".docusaurus/**"
+            ]
+        }
+    }
+}
+```
+
+## 7. Railway deployment
+
+The simplest path is to use Docusaurus's own `serve` command, which
+handles the static `build/` output with correct MIME types and 404
+handling.
+
+| Setting              | Value                                                                |
+|----------------------|----------------------------------------------------------------------|
+| `NIXPACKS_BUILD_CMD` | `bun install --production=false && bunx turbo run build --filter=docs` |
+| `NIXPACKS_START_CMD` | `bun run start`                                                      |
+| Watch paths          | `apps/docs/**`, `packages/**`                                        |
+
+The `start` script passes `--host 0.0.0.0` and reads `$PORT` from
+Railway's environment, falling back to 5550 when running locally.
+
+Alternative: serve the static `build/` directory with `serve`, Caddy,
+or Nginx for better caching and compression headers. Any static file
+server works.
+
+## 8. Verify the setup
+
+From the repo root:
+
+```bash
+bun install                           # workspace symlinks
+bun run dev --filter=docs             # starts Docusaurus on port 5550
+bun run build --filter=docs           # builds to apps/docs/build/
+bun run typecheck --filter=docs       # runs tsc against docs sources
+```
+
+Then open `http://localhost:5550` and click around the sidebar to
+verify the docs render.
+
+## Known gotchas
+
+- **Do not extend `@repo/typescript-config/base.json`.** Docusaurus
+  ships its own required tsconfig preset that sets JSX, module, and
+  lib in ways the base config does not. Extend `@docusaurus/tsconfig`.
+- **React version drift.** If another app in the monorepo pins a
+  different React version, bun may end up with two React copies in
+  the root `node_modules`. Add an `overrides` / `resolutions` block
+  to the root `package.json` to force a single version:
+
+  ```json
+  {
+      "overrides": {
+          "react": "19.2.4",
+          "react-dom": "19.2.4"
+      },
+      "resolutions": {
+          "react": "19.2.4",
+          "react-dom": "19.2.4"
+      }
+  }
+  ```
+
+- **`@docusaurus/plugin-ideal-image` is broken on React 19.** Its
+  transitive `react-waypoint` dependency fails to install cleanly.
+  Use the default image handling instead.
+- **Swizzle commands need the correct cwd.** Run swizzle from inside
+  the app: `cd apps/docs && bun run swizzle`. Running it from the repo
+  root can trip on hoisted `node_modules` resolution.
+- **Docusaurus and Tailwind do not play well together.** Stick with
+  Infima and Docusaurus theme variables. Do not try to import
+  `packages/ui/theme.css` into a swizzled component. It will not work
+  because the Docusaurus webpack config does not run the Tailwind v4
+  PostCSS pipeline.
+- **`turbo prune`** is still flaky with Bun as of April 2026. Avoid
+  it for Docusaurus deployments.
