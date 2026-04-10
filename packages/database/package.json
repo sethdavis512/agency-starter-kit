@@ -12,7 +12,9 @@
         "db:push": "prisma db push",
         "db:migrate": "prisma migrate dev",
         "db:seed": "prisma db seed",
-        "db:studio": "prisma studio"
+        "db:studio": "prisma studio",
+        "test": "vitest run --passWithNoTests",
+        "test:watch": "vitest"
     },
     "dependencies": {
         "@prisma/adapter-pg": "7.6.0",

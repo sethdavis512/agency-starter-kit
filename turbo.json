@@ -6,6 +6,25 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", "build/**", "generated/**"]
     },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "e2e": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "passThroughEnv": [
+        "PLAYWRIGHT_*",
+        "DATABASE_URL",
+        "CI",
+        "E2E_DB_RESET",
+        "E2E_SKIP_DB_SETUP",
+        "BETTER_AUTH_URL"
+      ]
+    },
     "typecheck": {
       "dependsOn": ["^build"]
     },

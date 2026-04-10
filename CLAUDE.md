@@ -9,6 +9,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 bun run dev              # Run all apps in parallel
 bun run build            # Build all workspaces
 bun run lint             # Lint all workspaces
+bun run e2e              # Run all Playwright projects in one run
+bun run e2e:portal       # Run only portal e2e project
+bun run e2e:admin        # Run only admin e2e project
+bun run e2e:report       # Open combined Playwright report
+# Optional: PLAYWRIGHT_REUSE_SERVER=1 bun run e2e
 bun run format           # Prettier format all files
 
 # Single app
@@ -33,6 +38,8 @@ bunx prisma studio        # Visual database browser
 # Turbo filtered builds
 bunx turbo run build --filter=portal
 bunx turbo run build --filter=admin
+bunx turbo run e2e --filter=portal
+bunx turbo run e2e --filter=admin
 ```
 
 ## Architecture

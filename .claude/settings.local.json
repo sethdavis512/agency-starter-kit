@@ -8,7 +8,21 @@
       "Bash(head -20 /Users/seth/repositories/lone-star-ui/src/components/*/index.ts)",
       "Bash(npm view:*)",
       "Bash(node -e \"require\\('esbuild'\\).version\")",
-      "Bash(grep -E \"\\\\.\\(ts|tsx|js|jsx\\)$\")"
+      "Bash(grep -E \"\\\\.\\(ts|tsx|js|jsx\\)$\")",
+      "Bash(grep:*)",
+      "WebSearch",
+      "WebFetch(domain:www.prisma.io)",
+      "WebFetch(domain:playwright.dev)",
+      "WebFetch(domain:turborepo.dev)",
+      "WebFetch(domain:vitest.dev)",
+      "WebFetch(domain:codepunkt.de)",
+      "WebFetch(domain:github.com)",
+      "Bash(timeout 2 node /Users/seth/repositories/agency-starter-kit/packages/ui-mcp/dist/index.js)",
+      "Bash(find /Users/seth/repositories/agency-starter-kit -name \"package.json\" -not -path \"*/node_modules/*\" -exec grep -l \"vite-tsconfig-paths\" {} \\\\;)",
+      "Bash(node -e \"const esbuild = require\\('esbuild'\\); esbuild.transform\\('const x=1'\\).then\\(r => console.log\\('ok:', r.code\\)\\).catch\\(e => console.error\\('err:', e.message\\)\\)\")",
+      "Bash(/Users/seth/repositories/agency-starter-kit/node_modules/@esbuild/darwin-arm64/bin/esbuild:*)",
+      "Bash(xattr -cr /Users/seth/repositories/agency-starter-kit/node_modules/@esbuild)",
+      "Bash(node -e \"require\\('esbuild'\\).transform\\('const x=1'\\).then\\(r => console.log\\('ok:', r.code.trim\\(\\)\\)\\).catch\\(e => console.error\\('err:', e.message\\)\\)\")"
     ]
   }
 }

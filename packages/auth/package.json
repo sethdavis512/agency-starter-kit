@@ -10,7 +10,9 @@
         "./middleware": "./src/middleware.ts"
     },
     "scripts": {
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run --passWithNoTests",
+        "test:watch": "vitest"
     },
     "dependencies": {
         "better-auth": "^1.4.0"

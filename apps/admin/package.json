@@ -6,7 +6,10 @@
         "build": "react-router build",
         "dev": "react-router dev",
         "start": "react-router-serve ./build/server/index.js",
-        "typecheck": "react-router typegen && tsc"
+        "typecheck": "react-router typegen && tsc",
+        "test": "vitest run --passWithNoTests",
+        "test:watch": "vitest",
+        "e2e": "PLAYWRIGHT_ARTIFACT_SUFFIX=admin playwright test --config ../../playwright.config.ts --project=admin"
     },
     "dependencies": {
         "@repo/auth": "*",
