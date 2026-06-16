@@ -2,6 +2,27 @@
 
 This is a community-maintained example. If you experience a problem, please submit a pull request with a fix. GitHub Issues will be closed.
 
+## Local development database
+
+The apps connect to PostgreSQL via a single `DATABASE_URL` environment variable — point it at any Postgres (Railway, Neon, a local install, etc.). For a zero-setup local database, an optional Docker Compose service is included:
+
+```sh
+bun run db:up     # start local Postgres (docker compose, detached)
+```
+
+Then create your `.env` files from the committed examples (their defaults already match the Compose service) and set up the schema:
+
+```sh
+cp packages/database/.env.example packages/database/.env
+cp apps/portal/.env.example apps/portal/.env
+cp apps/admin/.env.example apps/admin/.env
+
+bun run cli db:setup   # generate Prisma client + push schema + seed
+bun run dev
+```
+
+Docker is optional — if you already have a `DATABASE_URL`, skip `db:up` and just set it in the three `.env` files. Stop the local database with `bun run db:down` (data persists in a named volume).
+
 ## Using this example
 
 Run the following command:

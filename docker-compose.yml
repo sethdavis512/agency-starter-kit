@@ -1,0 +1,33 @@
+# Optional local Postgres for development.
+#
+# This is a convenience only — the apps read DATABASE_URL and nothing else, so
+# you can ignore this file entirely and point DATABASE_URL at Railway, Neon, or
+# a locally-installed Postgres instead.
+#
+#   bun run db:up      # start Postgres in the background
+#   bun run db:down    # stop it (data is preserved in the named volume)
+#
+# Matches the DATABASE_URL in the .env.example files:
+#   postgresql://postgres:postgres@localhost:5432/agency_starter?schema=public
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: agency-starter-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: agency_starter
+    ports:
+      - "5432:5432"
+    volumes:
+      - agency-starter-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d agency_starter"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  agency-starter-pgdata:

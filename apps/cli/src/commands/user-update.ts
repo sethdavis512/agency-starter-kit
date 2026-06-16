@@ -29,7 +29,7 @@ export function registerUserUpdate(program: Command) {
         options.role ??
         (await select({
           message: "Role:",
-          default: user.role,
+          default: user.role as "user" | "admin",
           choices: [
             { name: "user", value: "user" },
             { name: "admin", value: "admin" },
