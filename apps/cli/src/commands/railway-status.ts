@@ -17,6 +17,6 @@ export function registerRailwayStatus(program: Command) {
       await $`railway status`;
 
       console.log("\n=== Services ===\n");
-      await $`railway service status --all`;
+      await $`railway service status`;
     });
 }
