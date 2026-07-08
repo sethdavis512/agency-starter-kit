@@ -2,6 +2,53 @@ import type { Command } from "commander";
 import { select, input, confirm } from "@inquirer/prompts";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 
+export function insertProtectedRoute(routesContent: string, routeEntry: string): string | null {
+  const protectedPattern = /layout\('\.\/routes\/protected-layout\.tsx',\s*\[([\s\S]*?)\]\)/;
+  const match = routesContent.match(protectedPattern);
+
+  if (!match) return null;
+
+  const existingRoutes = match[1].trimEnd();
+  const updatedRoutes = `${existingRoutes},\n            ${routeEntry}`;
+  return routesContent.replace(
+    protectedPattern,
+    `layout('./routes/protected-layout.tsx', [${updatedRoutes}])`
+  );
+}
+
+export function insertPublicRoute(routesContent: string, routeEntry: string): string | null {
+  // The site-layout array nests a protected-layout array with its own closing
+  // "])", so a lazy regex like /\[([\s\S]*?)\]/ stops at the wrong bracket.
+  // Walk bracket depth instead to find the site-layout array's own close.
+  const openMarker = "layout('./routes/site-layout.tsx', [";
+  const arrayStart = routesContent.indexOf(openMarker);
+  if (arrayStart === -1) return null;
+
+  const contentStart = arrayStart + openMarker.length;
+  let depth = 1;
+  let arrayEnd = -1;
+  for (let i = contentStart; i < routesContent.length; i++) {
+    if (routesContent[i] === "[") depth++;
+    else if (routesContent[i] === "]") {
+      depth--;
+      if (depth === 0) {
+        arrayEnd = i;
+        break;
+      }
+    }
+  }
+  if (arrayEnd === -1) return null;
+
+  const existingRoutes = routesContent.slice(contentStart, arrayEnd).trimEnd();
+  const updatedRoutes = `${existingRoutes},\n        ${routeEntry}`;
+  return (
+    routesContent.slice(0, contentStart) +
+    updatedRoutes +
+    "\n    " +
+    routesContent.slice(arrayEnd)
+  );
+}
+
 export function registerAddRoute(program: Command) {
   program
     .command("add:route")
@@ -113,31 +160,16 @@ export default function ${componentName}(${propsArg}) {
       const routeEntry = `route('${urlPath}', './routes/${routeName}.tsx')`;
 
       if (isProtected) {
-        const protectedPattern = /layout\('\.\/routes\/protected-layout\.tsx',\s*\[([\s\S]*?)\]\)/;
-        const match = routesContent.match(protectedPattern);
-
-        if (match) {
-          const existingRoutes = match[1].trimEnd();
-          const updatedRoutes = `${existingRoutes},\n            ${routeEntry}`;
-          const updatedContent = routesContent.replace(
-            protectedPattern,
-            `layout('./routes/protected-layout.tsx', [${updatedRoutes}])`
-          );
+        const updatedContent = insertProtectedRoute(routesContent, routeEntry);
+        if (updatedContent) {
           writeFileSync(routesPath, updatedContent);
           console.log(`Added protected route '${urlPath}' to ${routesPath}`);
         } else {
           console.log(`Could not find protected-layout in ${routesPath}. Add the route manually.`);
         }
       } else {
-        const siteLayoutPattern = /layout\('\.\/routes\/site-layout\.tsx',\s*\[([\s\S]*?)\]\s*\)/;
-        const match = routesContent.match(siteLayoutPattern);
-
-        if (match) {
-          const lastRoutePattern = /(route\('[^']+',\s*'[^']+'\))\s*\n\s*\]\s*\)/;
-          const updatedContent = routesContent.replace(
-            lastRoutePattern,
-            `$1,\n        ${routeEntry}\n    ])`
-          );
+        const updatedContent = insertPublicRoute(routesContent, routeEntry);
+        if (updatedContent) {
           writeFileSync(routesPath, updatedContent);
           console.log(`Added public route '${urlPath}' to ${routesPath}`);
         } else {
