@@ -2,11 +2,17 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { prisma } from '@repo/database';
 
+const trustedOriginsFromEnv =
+    process.env.TRUSTED_ORIGINS?.split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean) ?? [];
+
 export const auth = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:5510',
     trustedOrigins: [
         'http://localhost:5510',
-        'http://localhost:5520'
+        'http://localhost:5520',
+        ...trustedOriginsFromEnv
     ],
     database: prismaAdapter(prisma, {
         provider: 'postgresql'
