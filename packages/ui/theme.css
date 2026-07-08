@@ -21,6 +21,7 @@
     --color-secondary: oklch(68% 0.16 32);    /* warm coral           */
     --color-accent: oklch(64% 0.19 158);      /* emerald green        */
     --color-neutral: oklch(32% 0.02 260);     /* cool charcoal        */
+    --color-neutral-solid: oklch(32% 0.02 260); /* non-inverting dark surface, pairs with text-white */
     --color-muted: oklch(94% 0.008 260);      /* soft cool gray       */
     --color-danger: oklch(57% 0.21 24);       /* crimson red          */
     --color-surface: #ffffff;
@@ -32,6 +33,8 @@
     --color-secondary: oklch(74% 0.14 32);
     --color-accent: oklch(72% 0.16 158);
     --color-neutral: oklch(88% 0.01 260);
+    /* --color-neutral-solid intentionally not overridden: it must stay a
+       dark surface in both themes since text-white is hardcoded on it. */
     --color-muted: oklch(24% 0.015 260);
     --color-danger: oklch(65% 0.18 24);
     --color-surface: oklch(16% 0.015 260);

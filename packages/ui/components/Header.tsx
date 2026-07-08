@@ -8,7 +8,7 @@ export const headerVariants = cva({
     base: 'mb-2 p-4 text-white',
     variants: {
         variant: {
-            admin: 'bg-neutral',
+            admin: 'bg-neutral-solid',
             portal: 'bg-secondary'
         }
     }
