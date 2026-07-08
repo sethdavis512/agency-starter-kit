@@ -71,7 +71,7 @@ Turborepo monorepo with two React Router 7 apps sharing packages.
 - `@repo/ui` — Component library (~52 components) using Base UI primitives, CVA variants, and OKLCH design tokens (primary, secondary, accent, neutral, muted, danger, surface). Exports raw `.tsx` files (no build step). Components are exported individually via package.json `exports` (e.g., `"./button": "./components/Button/index.ts"`). Also exports `theme.css` with token definitions and dark mode support. Note: many components are exported but unused by the apps; `index.ts` only re-exports a couple, so import by subpath (`@repo/ui/button`).
 - `@repo/utils` — Small shared helpers. Subpaths: `./` (re-exports `tiny-invariant`), `./icons` (re-exports `lucide-react`), `./date` (date formatting).
 - `@repo/ui-mcp` — Standalone MCP **server binary** (`ui-mcp-server`) that exposes the `@repo/ui` design system to AI assistants (component/variant lookup, token values, design-rule validation). NOT an app dependency — nothing imports it.
-- `@repo/validation` — Placeholder. Declares `./vehicle`, `./appointment`, `./repair` schema exports but the source files do not exist yet; not imported anywhere.
+- `@repo/validation` — Placeholder. No subpath exports declared yet (previously advertised `./vehicle`, `./appointment`, `./repair` pointing at nonexistent files); not imported anywhere. Add exports back once real schema files exist.
 - `@repo/test-utils` — Vitest DB/auth test helpers. Wired up but currently unused by any test.
 - `@repo/typescript-config` — Shared tsconfig presets (`base.json`, `vite.json`)
 - `@repo/eslint-config` — Shared ESLint configuration (flat config; consumed by root `eslint.config.js`)
