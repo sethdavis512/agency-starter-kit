@@ -10,6 +10,20 @@ const globals = require("globals");
  * walking up to the repo-root eslint.config.js.
  */
 module.exports = [
+  {
+    // Generated/build output is never hand-written; nothing here should be
+    // linted regardless of which glob a workspace's `lint` script passes.
+    ignores: [
+      "**/.react-router/**",
+      "**/build/**",
+      "**/dist/**",
+      "**/dist-ssr/**",
+      "**/generated/**",
+      "**/.turbo/**",
+      "**/playwright-report/**",
+      "**/test-results/**",
+    ],
+  },
   js.configs.recommended,
   {
     files: ["**/*.{ts,tsx}"],
