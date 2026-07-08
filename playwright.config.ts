@@ -6,7 +6,7 @@ const htmlOutputFolder = artifactSuffix
   ? `playwright-report/${artifactSuffix}`
   : 'playwright-report'
 const outputDir = artifactSuffix ? `test-results/${artifactSuffix}` : 'test-results'
-const reuseExistingServer = process.env.PLAYWRIGHT_REUSE_SERVER !== '0' && !isCI
+const reuseExistingServer = process.env.PLAYWRIGHT_REUSE_SERVER === '1' && !isCI
 
 export default defineConfig({
   testDir: './e2e',
