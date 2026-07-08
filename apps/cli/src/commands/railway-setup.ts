@@ -45,7 +45,7 @@ export function registerRailwaySetup(program: Command) {
 
       if (addDb) {
         console.log("Adding PostgreSQL...");
-        await $`railway add --plugin postgresql`;
+        await $`railway add --database postgres`;
       }
 
       console.log("Adding portal service...");
@@ -63,8 +63,8 @@ export function registerRailwaySetup(program: Command) {
       await $`railway variable set NIXPACKS_START_CMD="bun run start" --service admin`;
 
       console.log("\nGenerating domains...");
-      await $`railway domain generate --service portal`;
-      await $`railway domain generate --service admin`;
+      await $`railway domain --service portal`;
+      await $`railway domain --service admin`;
 
       console.log("\nSetup complete! Next steps:");
       console.log("  1. Set BETTER_AUTH_SECRET and BETTER_AUTH_URL for each service");
