@@ -44,6 +44,10 @@ jobs:
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps chromium
 
+      - name: Generate Prisma client
+        run: bunx prisma generate
+        working-directory: packages/database
+
       - name: Run e2e suite
         run: bun run e2e
 
@@ -62,5 +66,5 @@ jobs:
         with:
           name: playwright-test-results
           path: test-results/
-          if-no-files-found: error
+          if-no-files-found: ignore
           retention-days: 14
