@@ -23,8 +23,7 @@ export default async function globalSetup() {
     return
   }
 
-  const shouldResetDb =
-    process.env.CI || process.env.E2E_DB_RESET !== '0'
+  const shouldResetDb = process.env.E2E_DB_RESET === '1'
 
   if (shouldResetDb) {
     runPrisma('db', 'push', '--force-reset')
