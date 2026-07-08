@@ -16,7 +16,7 @@ module.exports = [
     plugins: { "@typescript-eslint": tsPlugin },
     languageOptions: {
       parser: tsParser,
-      ecmaVersion: 2020,
+      ecmaVersion: "latest",
       sourceType: "module",
       globals: { ...globals.node, ...globals.browser },
     },
