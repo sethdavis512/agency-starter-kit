@@ -17,7 +17,7 @@
         "@repo/eslint-config": "*",
         "@repo/typescript-config": "*",
         "eslint": "^10.5.0",
-        "typescript": "^6.0.3"
+        "typescript": "~6.0.0"
     },
     "dependencies": {
         "@tanstack/react-table": "^8.21.3",
