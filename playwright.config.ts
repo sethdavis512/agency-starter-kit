@@ -48,6 +48,7 @@ export default defineConfig({
       url: 'http://localhost:5520',
       reuseExistingServer,
       timeout: 120_000,
+      env: { BETTER_AUTH_URL: process.env.BETTER_AUTH_URL ?? 'http://localhost:5520' },
     },
     {
       command:
@@ -55,6 +56,7 @@ export default defineConfig({
       url: 'http://localhost:5510',
       reuseExistingServer,
       timeout: 120_000,
+      env: { BETTER_AUTH_URL: process.env.BETTER_AUTH_URL ?? 'http://localhost:5510' },
     },
   ],
 })
