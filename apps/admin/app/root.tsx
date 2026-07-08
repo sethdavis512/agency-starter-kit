@@ -24,6 +24,7 @@ export const links: Route.LinksFunction = () => [
     }
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- dead scaffolding tracked by TEC-281
 type RootContext = {
     // Empty context - authentication handled in site-layout
 };

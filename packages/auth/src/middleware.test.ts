@@ -63,7 +63,6 @@ describe('requireAuth', () => {
 
 describe('requireAdmin', () => {
   it('redirects to /no-access when user is not an admin', async () => {
-    const entries = new Map()
     // We need to use the actual userContext key, but since it's imported internally,
     // we set up a context where .get() returns a non-admin user for any key
     const context = {
