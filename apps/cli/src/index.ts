@@ -49,4 +49,11 @@ registerLogs(program);
 registerRailwayStatus(program);
 registerRailwaySetup(program);
 
-program.parse();
+// Use parseAsync (not parse) + a top-level catch so that command actions
+// which reject (DB unreachable, duplicate email, etc.) print a clean error
+// and exit non-zero instead of surfacing as an unhandled promise rejection.
+program.parseAsync().catch((error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(`Error: ${message}`);
+  process.exit(1);
+});
