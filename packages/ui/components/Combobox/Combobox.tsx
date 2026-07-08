@@ -105,7 +105,7 @@ export const ComboboxItem = React.forwardRef<
         className={cn(
             'relative grid cursor-default select-none grid-cols-[0.875rem_1fr] items-center gap-2 px-3 py-2 text-sm text-neutral outline-none data-disabled:pointer-events-none data-disabled:opacity-50',
             // Highlighted: warm neutral background — like a night sky
-            'data-highlighted:before:absolute data-highlighted:before:inset-x-1.5 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:rounded-md data-highlighted:before:bg-neutral data-highlighted:before:content-[""] data-highlighted:relative data-highlighted:z-0 data-highlighted:text-white',
+            'data-highlighted:before:absolute data-highlighted:before:inset-x-1.5 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:rounded-md data-highlighted:before:bg-neutral-solid data-highlighted:before:content-[""] data-highlighted:relative data-highlighted:z-0 data-highlighted:text-white',
             className
         )}
         {...props}
