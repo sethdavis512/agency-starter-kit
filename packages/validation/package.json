@@ -2,11 +2,6 @@
     "name": "@repo/validation",
     "version": "0.0.0",
     "type": "module",
-    "exports": {
-        "./vehicle": "./schemas/vehicle.ts",
-        "./appointment": "./schemas/appointment.ts",
-        "./repair": "./schemas/repair.ts"
-    },
     "license": "MIT",
     "scripts": {
         "lint": "eslint \"**/*.ts\"",
