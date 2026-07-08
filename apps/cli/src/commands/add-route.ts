@@ -2,6 +2,76 @@ import type { Command } from "commander";
 import { select, input, confirm } from "@inquirer/prompts";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 
+export interface RouteScaffoldOptions {
+  app: "portal" | "admin";
+  routeName: string;
+  needsLoader: boolean;
+  needsAction: boolean;
+  isProtected: boolean;
+}
+
+export function generateRouteFileContent({
+  app,
+  routeName,
+  needsLoader,
+  needsAction,
+  isProtected,
+}: RouteScaffoldOptions): string {
+  const imports: string[] = [];
+  const exports: string[] = [];
+
+  imports.push(`import type { Route } from './+types/${routeName}';`);
+  imports.push(`import { PageHeader } from '@repo/ui/page-header';`);
+
+  if (needsLoader) {
+    const loaderBody = isProtected
+      ? `    // const sessionUser = context.get(userContext);
+    return {};`
+      : `    return {};`;
+
+    const loaderArgs = isProtected ? `{ request, context }` : `{ request }`;
+
+    exports.push(`export async function loader(${loaderArgs}: Route.LoaderArgs) {
+${loaderBody}
+}`);
+  }
+
+  if (needsAction) {
+    exports.push(`export async function action({ request }: Route.ActionArgs) {
+    const formData = await request.formData();
+    return {};
+}`);
+  }
+
+  const componentName =
+    routeName
+      .split("-")
+      .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+      .join("") + "Route";
+
+  const titleSuffix = app === "admin" ? "Stealthy Chicken Admin" : "Stealthy Chicken";
+  const pageTitle = routeName
+    .split("-")
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join(" ");
+
+  const propsArg = needsLoader ? `{ loaderData }: Route.ComponentProps` : "";
+
+  return `${imports.join("\n")}
+
+${exports.join("\n\n")}
+
+export default function ${componentName}(${propsArg}) {
+    return (
+        <>
+            <title>${pageTitle} | ${titleSuffix}</title>
+            <PageHeader title="${pageTitle}" className="mb-4" />
+        </>
+    );
+}
+`;
+}
+
 export function insertProtectedRoute(routesContent: string, routeEntry: string): string | null {
   const protectedPattern = /layout\('\.\/routes\/protected-layout\.tsx',\s*\[([\s\S]*?)\]\)/;
   const match = routesContent.match(protectedPattern);
@@ -88,61 +158,13 @@ export function registerAddRoute(program: Command) {
         default: true,
       });
 
-      const imports: string[] = [];
-      const exports: string[] = [];
-
-      imports.push(`import type { Route } from './+types/${routeName}';`);
-      imports.push(`import { Heading } from '@repo/ui/heading';`);
-
-      if (needsLoader) {
-        const loaderBody = isProtected
-          ? `    // const sessionUser = context.get(userContext);
-    return {};`
-          : `    return {};`;
-
-        const loaderArgs = isProtected ? `{ request, context }` : `{ request }`;
-
-        exports.push(`export async function loader(${loaderArgs}: Route.LoaderArgs) {
-${loaderBody}
-}`);
-      }
-
-      if (needsAction) {
-        exports.push(`export async function action({ request }: Route.ActionArgs) {
-    const formData = await request.formData();
-    return {};
-}`);
-      }
-
-      const componentName =
-        routeName
-          .split("-")
-          .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-          .join("") + "Route";
-
-      const titleSuffix = app === "admin" ? "Stealthy Chicken Admin" : "Stealthy Chicken";
-      const pageTitle = routeName
-        .split("-")
-        .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-        .join(" ");
-
-      const propsArg = needsLoader ? `{ loaderData }: Route.ComponentProps` : "";
-
-      const fileContent = `${imports.join("\n")}
-
-${exports.join("\n\n")}
-
-export default function ${componentName}(${propsArg}) {
-    return (
-        <>
-            <title>${pageTitle} | ${titleSuffix}</title>
-            <Heading size="xl" bold className="mb-4">
-                ${pageTitle}
-            </Heading>
-        </>
-    );
-}
-`;
+      const fileContent = generateRouteFileContent({
+        app,
+        routeName,
+        needsLoader,
+        needsAction,
+        isProtected,
+      });
 
       const routeFilePath = `apps/${app}/app/routes/${routeName}.tsx`;
 
