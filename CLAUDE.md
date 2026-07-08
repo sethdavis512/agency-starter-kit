@@ -19,6 +19,9 @@ bun run e2e:portal       # Run only portal e2e project
 bun run e2e:admin        # Run only admin e2e project
 bun run e2e:report       # Open combined Playwright report
 # Optional: PLAYWRIGHT_REUSE_SERVER=1 bun run e2e
+# e2e global setup runs `prisma db push` (non-destructive) against DATABASE_URL by default.
+# Set E2E_DB_RESET=1 to force-reset (drop + recreate all tables) before seeding — CI sets this;
+# do NOT set it locally against a shared/dev/staging database.
 bun run format           # Prettier format all files
 
 # Unit tests (Vitest)
