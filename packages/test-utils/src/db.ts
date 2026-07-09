@@ -20,7 +20,7 @@ export async function createTestUser(
   overrides: Partial<{
     name: string
     email: string
-    role: string
+    role: 'user' | 'admin'
     emailVerified: boolean
   }> = {},
 ) {
