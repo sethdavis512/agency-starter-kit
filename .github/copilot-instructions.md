@@ -31,8 +31,8 @@ bunx prisma studio                     # Database GUI
 **Config-based routing** in `app/routes.ts`:
 
 ```ts
-import { type RouteConfig, index } from '@react-router/dev/routes';
-export default [index('routes/home.tsx')] satisfies RouteConfig;
+import { type RouteConfig, index } from "@react-router/dev/routes";
+export default [index("routes/home.tsx")] satisfies RouteConfig;
 ```
 
 **Data access via props, NOT hooks:**
@@ -53,8 +53,8 @@ useLoaderData() // Old pattern, don't use
 Each app's `app/app.css` requires:
 
 ```css
-@import 'tailwindcss';
-@import '../../../packages/theme/theme.css';
+@import "tailwindcss";
+@import "../../../packages/theme/theme.css";
 @source "../../../packages/ui";
 ```
 
@@ -65,7 +65,7 @@ The `@source` directive tells Tailwind v4 to scan the UI package. Paths are rela
 `@repo/ui` exports individual components via package.json `exports` field. Import as:
 
 ```ts
-import { Card } from '@repo/ui/card'; // Maps to components/Card.tsx
+import { Card } from "@repo/ui/card"; // Maps to components/Card.tsx
 ```
 
 Components use CVA with tailwind-merge for variant styling (see `packages/ui/utils/cva.config.ts`).
@@ -75,7 +75,7 @@ Components use CVA with tailwind-merge for variant styling (see `packages/ui/uti
 Import the singleton Prisma client from `@repo/database`:
 
 ```ts
-import { prisma } from '@repo/database';
+import { prisma } from "@repo/database";
 ```
 
 The singleton pattern prevents connection exhaustion in development (see `packages/database/src/index.ts`).

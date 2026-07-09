@@ -1,8 +1,8 @@
-import { defineProject } from 'vitest/config'
+import { defineProject } from "vitest/config";
 
 export default defineProject({
   test: {
-    name: 'auth',
-    environment: 'node',
+    name: "auth",
+    environment: "node",
   },
-})
+});

@@ -1,2 +1,2 @@
-export { AvatarLabel } from './AvatarLabel';
-export type { AvatarLabelProps } from './AvatarLabel';
+export { AvatarLabel } from "./AvatarLabel";
+export type { AvatarLabelProps } from "./AvatarLabel";

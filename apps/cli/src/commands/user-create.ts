@@ -22,10 +22,15 @@ export function registerUserCreate(program: Command) {
 
       const name =
         options.name ??
-        (await input({ message: "Name:", validate: (v) => v.length > 0 || "Name is required" }));
+        (await input({
+          message: "Name:",
+          validate: (v) => v.length > 0 || "Name is required",
+        }));
 
       if (options.role && !isValidRole(options.role)) {
-        console.error(`Invalid role "${options.role}". Must be one of: ${USER_ROLES.join(", ")}.`);
+        console.error(
+          `Invalid role "${options.role}". Must be one of: ${USER_ROLES.join(", ")}.`,
+        );
         process.exit(1);
       }
 

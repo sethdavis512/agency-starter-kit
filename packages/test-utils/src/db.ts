@@ -1,4 +1,4 @@
-import { prisma } from '@repo/database'
+import { prisma } from "@repo/database";
 
 /**
  * Truncate all tables in FK-safe order.
@@ -10,7 +10,7 @@ export async function cleanDatabase() {
     prisma.session.deleteMany(),
     prisma.account.deleteMany(),
     prisma.user.deleteMany(),
-  ])
+  ]);
 }
 
 /**
@@ -18,18 +18,20 @@ export async function cleanDatabase() {
  */
 export async function createTestUser(
   overrides: Partial<{
-    name: string
-    email: string
-    role: 'user' | 'admin'
-    emailVerified: boolean
+    name: string;
+    email: string;
+    role: "user" | "admin";
+    emailVerified: boolean;
   }> = {},
 ) {
   return prisma.user.create({
     data: {
-      name: overrides.name ?? 'Test User',
-      email: overrides.email ?? `test-${Date.now()}-${Math.random().toString(36).slice(2)}@example.com`,
-      role: overrides.role ?? 'user',
+      name: overrides.name ?? "Test User",
+      email:
+        overrides.email ??
+        `test-${Date.now()}-${Math.random().toString(36).slice(2)}@example.com`,
+      role: overrides.role ?? "user",
       emailVerified: overrides.emailVerified ?? true,
     },
-  })
+  });
 }
