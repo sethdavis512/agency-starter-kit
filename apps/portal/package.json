@@ -15,6 +15,7 @@
     "dependencies": {
         "@repo/auth": "*",
         "@repo/database": "*",
+        "@repo/ui": "*",
         "@react-router/node": "7.17.0",
         "better-auth": "^1.6.18",
         "@react-router/serve": "7.17.0",
@@ -24,7 +25,6 @@
         "react-router": "7.17.0"
     },
     "devDependencies": {
-        "@repo/ui": "*",
         "@react-router/dev": "7.17.0",
         "@tailwindcss/vite": "^4.3.1",
         "@types/node": "^25",
