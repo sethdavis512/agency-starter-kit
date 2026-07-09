@@ -20,7 +20,9 @@ describe('getUserById', () => {
             role: 'user',
             createdAt: new Date('2026-01-01T00:00:00.000Z')
         };
-        vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as any);
+        vi.mocked(prisma.user.findUnique).mockResolvedValue(
+            mockUser as Awaited<ReturnType<typeof getUserById>>
+        );
 
         const result = await getUserById('user-1');
 
@@ -38,7 +40,9 @@ describe('getUserById', () => {
     });
 
     it('returns null when no user matches the id', async () => {
-        vi.mocked(prisma.user.findUnique).mockResolvedValue(null as any);
+        vi.mocked(prisma.user.findUnique).mockResolvedValue(
+            null as Awaited<ReturnType<typeof getUserById>>
+        );
 
         const result = await getUserById('missing-id');
 

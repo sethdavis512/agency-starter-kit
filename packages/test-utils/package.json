@@ -8,6 +8,9 @@
     "./db": "./src/db.ts",
     "./auth": "./src/auth.ts"
   },
+  "scripts": {
+    "lint": "eslint \"**/*.ts\""
+  },
   "dependencies": {
     "@repo/database": "*"
   },
