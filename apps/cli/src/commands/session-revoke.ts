@@ -8,6 +8,7 @@ export function registerSessionRevoke(program: Command) {
     .description("Revoke sessions")
     .argument("[session-id]", "specific session ID to revoke")
     .option("--user <email>", "revoke all sessions for a user")
+    .option("--yes", "skip the confirmation prompt")
     .action(async (sessionId, options) => {
       if (options.user) {
         const user = await prisma.user.findUnique({
@@ -26,10 +27,12 @@ export function registerSessionRevoke(program: Command) {
           return;
         }
 
-        const yes = await confirm({
-          message: `Revoke all ${count} session(s) for ${options.user}?`,
-          default: false,
-        });
+        const yes =
+          options.yes ??
+          (await confirm({
+            message: `Revoke all ${count} session(s) for ${options.user}?`,
+            default: false,
+          }));
 
         if (!yes) {
           console.log("Cancelled.");
