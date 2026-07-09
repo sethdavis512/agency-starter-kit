@@ -26,7 +26,9 @@ bun run format           # Prettier format all files
 
 # Unit tests (Vitest)
 bun run test             # Run all unit tests across workspaces (via turbo)
-bun run test:watch       # Vitest watch mode
+# test:watch with no filter launches a persistent Vitest watcher in all 9 workspaces at
+# once (9 competing TUIs in one terminal) — always scope it to the package you're on:
+bun run test:watch --filter=@repo/auth    # or --filter=portal, --filter=@repo/utils, etc.
 # Single test: run vitest directly inside the package (e.g. packages/auth)
 bunx vitest run src/auth.server.test.ts   # one file
 bunx vitest run -t "revokes a session"    # by test name
