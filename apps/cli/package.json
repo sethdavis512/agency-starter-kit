@@ -6,6 +6,7 @@
   "scripts": {
     "build": "bun build src/index.ts --compile --outfile dist/cli",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint \"**/*.ts\"",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest"
   },
