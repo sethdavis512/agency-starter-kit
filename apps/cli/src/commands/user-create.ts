@@ -2,6 +2,7 @@ import type { Command } from "commander";
 import { input, select, password } from "@inquirer/prompts";
 import { auth } from "@repo/auth/server";
 import { prisma } from "@repo/database";
+import { isValidRole, USER_ROLES } from "../lib/roles";
 
 export function registerUserCreate(program: Command) {
   program
@@ -22,6 +23,11 @@ export function registerUserCreate(program: Command) {
       const name =
         options.name ??
         (await input({ message: "Name:", validate: (v) => v.length > 0 || "Name is required" }));
+
+      if (options.role && !isValidRole(options.role)) {
+        console.error(`Invalid role "${options.role}". Must be one of: ${USER_ROLES.join(", ")}.`);
+        process.exit(1);
+      }
 
       const role =
         options.role ??
