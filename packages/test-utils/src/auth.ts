@@ -3,27 +3,27 @@
  */
 export function mockSession(
   overrides: Partial<{
-    userId: string
-    email: string
-    name: string
-    role: string
+    userId: string;
+    email: string;
+    name: string;
+    role: string;
   }> = {},
 ) {
-  const userId = overrides.userId ?? 'test-user-id'
+  const userId = overrides.userId ?? "test-user-id";
   return {
     user: {
       id: userId,
-      email: overrides.email ?? 'test@example.com',
-      name: overrides.name ?? 'Test User',
-      role: overrides.role ?? 'user',
+      email: overrides.email ?? "test@example.com",
+      name: overrides.name ?? "Test User",
+      role: overrides.role ?? "user",
     },
     session: {
-      id: 'test-session-id',
-      token: 'test-token',
+      id: "test-session-id",
+      token: "test-token",
       userId,
       expiresAt: new Date(Date.now() + 86400000),
     },
-  }
+  };
 }
 
 /**
@@ -31,26 +31,23 @@ export function mockSession(
  */
 export function mockUserContext(
   overrides: Partial<{
-    id: string
-    email: string
-    name: string
-    role: string
+    id: string;
+    email: string;
+    name: string;
+    role: string;
   }> = {},
 ) {
   return {
-    id: overrides.id ?? 'test-user-id',
-    email: overrides.email ?? 'test@example.com',
-    name: overrides.name ?? 'Test User',
-    role: overrides.role ?? 'user',
-  }
+    id: overrides.id ?? "test-user-id",
+    email: overrides.email ?? "test@example.com",
+    name: overrides.name ?? "Test User",
+    role: overrides.role ?? "user",
+  };
 }
 
 /**
  * Create a mock Request for testing loaders/actions.
  */
-export function createMockRequest(
-  url: string,
-  options?: RequestInit,
-) {
-  return new Request(url, options)
+export function createMockRequest(url: string, options?: RequestInit) {
+  return new Request(url, options);
 }

@@ -49,7 +49,8 @@ ${loaderBody}
       .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
       .join("") + "Route";
 
-  const titleSuffix = app === "admin" ? "Stealthy Chicken Admin" : "Stealthy Chicken";
+  const titleSuffix =
+    app === "admin" ? "Stealthy Chicken Admin" : "Stealthy Chicken";
   const pageTitle = routeName
     .split("-")
     .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
@@ -72,8 +73,12 @@ export default function ${componentName}(${propsArg}) {
 `;
 }
 
-export function insertProtectedRoute(routesContent: string, routeEntry: string): string | null {
-  const protectedPattern = /layout\('\.\/routes\/protected-layout\.tsx',\s*\[([\s\S]*?)\]\)/;
+export function insertProtectedRoute(
+  routesContent: string,
+  routeEntry: string,
+): string | null {
+  const protectedPattern =
+    /layout\('\.\/routes\/protected-layout\.tsx',\s*\[([\s\S]*?)\]\)/;
   const match = routesContent.match(protectedPattern);
 
   if (!match) return null;
@@ -82,11 +87,14 @@ export function insertProtectedRoute(routesContent: string, routeEntry: string):
   const updatedRoutes = `${existingRoutes},\n            ${routeEntry}`;
   return routesContent.replace(
     protectedPattern,
-    `layout('./routes/protected-layout.tsx', [${updatedRoutes}])`
+    `layout('./routes/protected-layout.tsx', [${updatedRoutes}])`,
   );
 }
 
-export function insertPublicRoute(routesContent: string, routeEntry: string): string | null {
+export function insertPublicRoute(
+  routesContent: string,
+  routeEntry: string,
+): string | null {
   // The site-layout array nests a protected-layout array with its own closing
   // "])", so a lazy regex like /\[([\s\S]*?)\]/ stops at the wrong bracket.
   // Walk bracket depth instead to find the site-layout array's own close.
@@ -135,7 +143,8 @@ export function registerAddRoute(program: Command) {
       const routeName = await input({
         message: "Route name (kebab-case, e.g. settings):",
         validate: (v) =>
-          /^[a-z][a-z0-9-]*$/.test(v) || "Use lowercase kebab-case (e.g. settings)",
+          /^[a-z][a-z0-9-]*$/.test(v) ||
+          "Use lowercase kebab-case (e.g. settings)",
       });
 
       const urlPath = await input({
@@ -187,7 +196,9 @@ export function registerAddRoute(program: Command) {
           writeFileSync(routesPath, updatedContent);
           console.log(`Added protected route '${urlPath}' to ${routesPath}`);
         } else {
-          console.log(`Could not find protected-layout in ${routesPath}. Add the route manually.`);
+          console.log(
+            `Could not find protected-layout in ${routesPath}. Add the route manually.`,
+          );
         }
       } else {
         const updatedContent = insertPublicRoute(routesContent, routeEntry);
@@ -195,7 +206,9 @@ export function registerAddRoute(program: Command) {
           writeFileSync(routesPath, updatedContent);
           console.log(`Added public route '${urlPath}' to ${routesPath}`);
         } else {
-          console.log(`Could not find site-layout in ${routesPath}. Add the route manually.`);
+          console.log(
+            `Could not find site-layout in ${routesPath}. Add the route manually.`,
+          );
         }
       }
 

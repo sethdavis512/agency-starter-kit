@@ -15,26 +15,26 @@ Then it serves that catalog through six tools over stdio.
 
 ## Tools
 
-| Tool | Purpose |
-|---|---|
-| `ui_list_components` | Paginated catalog of all `@repo/ui` components. Filter by `has_variants` to find CVA-enabled or plain components. |
-| `ui_get_component` | Full manifest for one component: import path, CVA variant matrix, defaults, Base UI primitive, exports, line count. Fuzzy-matches typos (`buton` → `button`). |
-| `ui_get_component_source` | Raw `.tsx` source for a component, with optional `start_line`/`end_line` slicing. |
-| `ui_list_tokens` | All design tokens grouped by type (`color`, `font`, `other`), in `light`, `dark`, or `both` modes. |
-| `ui_get_token` | Single-token detail with light/dark values, OKLCH decomposition, and ready-to-use Tailwind utility examples. |
-| `ui_validate_usage` | Paste a JSX/TSX snippet, get back a list of violations with line/column and suggested fixes. See rules below. |
+| Tool                      | Purpose                                                                                                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ui_list_components`      | Paginated catalog of all `@repo/ui` components. Filter by `has_variants` to find CVA-enabled or plain components.                                             |
+| `ui_get_component`        | Full manifest for one component: import path, CVA variant matrix, defaults, Base UI primitive, exports, line count. Fuzzy-matches typos (`buton` → `button`). |
+| `ui_get_component_source` | Raw `.tsx` source for a component, with optional `start_line`/`end_line` slicing.                                                                             |
+| `ui_list_tokens`          | All design tokens grouped by type (`color`, `font`, `other`), in `light`, `dark`, or `both` modes.                                                            |
+| `ui_get_token`            | Single-token detail with light/dark values, OKLCH decomposition, and ready-to-use Tailwind utility examples.                                                  |
+| `ui_validate_usage`       | Paste a JSX/TSX snippet, get back a list of violations with line/column and suggested fixes. See rules below.                                                 |
 
 All tools are read-only (`readOnlyHint: true`) and return both a human-readable text block and a `structuredContent` payload for programmatic consumption. Every tool accepts `response_format: 'markdown' | 'json'`.
 
 ### `ui_validate_usage` rules
 
-| Rule | What it catches | Suggestion |
-|---|---|---|
-| `no-raw-tailwind-colors` | `bg-blue-500`, `text-red-400`, `border-gray-200`, any Tailwind palette color with a shade number | Maps to the nearest `@repo/ui` token (`bg-primary`, `text-danger`, `border-neutral`) |
-| `no-arbitrary-colors` | `bg-[#ff0000]`, `text-[rgb(...)]`, `border-[oklch(...)]` | Directs to add a token in `theme.css` or use an existing one |
-| `no-hardcoded-white-black` | `bg-white`, `bg-black`, `dark:bg-white` | Suggests `bg-surface` (which adapts to dark mode automatically) |
-| `use-subpath-imports` | `import { Button } from '@repo/ui'` (bare package, not exported) | Directs to the specific subpath, e.g. `@repo/ui/button` |
-| `unknown-component-import` | `import { Foo } from '@repo/ui/buton'` (typo or unknown component) | Fuzzy-suggests the closest valid subpath |
+| Rule                       | What it catches                                                                                  | Suggestion                                                                           |
+| -------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `no-raw-tailwind-colors`   | `bg-blue-500`, `text-red-400`, `border-gray-200`, any Tailwind palette color with a shade number | Maps to the nearest `@repo/ui` token (`bg-primary`, `text-danger`, `border-neutral`) |
+| `no-arbitrary-colors`      | `bg-[#ff0000]`, `text-[rgb(...)]`, `border-[oklch(...)]`                                         | Directs to add a token in `theme.css` or use an existing one                         |
+| `no-hardcoded-white-black` | `bg-white`, `bg-black`, `dark:bg-white`                                                          | Suggests `bg-surface` (which adapts to dark mode automatically)                      |
+| `use-subpath-imports`      | `import { Button } from '@repo/ui'` (bare package, not exported)                                 | Directs to the specific subpath, e.g. `@repo/ui/button`                              |
+| `unknown-component-import` | `import { Foo } from '@repo/ui/buton'` (typo or unknown component)                               | Fuzzy-suggests the closest valid subpath                                             |
 
 ## Install
 
@@ -135,9 +135,9 @@ bun run test
 
 Sample questions:
 
-- *"Which color token has the largest absolute change in OKLCH lightness between light and dark modes?"* → `muted`
-- *"Which component defines the greatest total number of CVA variant options across all axes?"* → `avatar`
-- *"How many components wrap a primitive from `@base-ui/react`?"* → `35`
+- _"Which color token has the largest absolute change in OKLCH lightness between light and dark modes?"_ → `muted`
+- _"Which component defines the greatest total number of CVA variant options across all axes?"_ → `avatar`
+- _"How many components wrap a primitive from `@base-ui/react`?"_ → `35`
 
 Run the evaluation harness (from the `mcp-builder` skill's `scripts/evaluation.py`) to benchmark an LLM against this server:
 

@@ -24,7 +24,7 @@
     --color-neutral-solid: oklch(32% 0.02 260); /* non-inverting dark surface, pairs with text-white */
     --color-muted: oklch(94% 0.008 260);      /* soft cool gray       */
     --color-danger: oklch(57% 0.21 24);       /* crimson red          */
-    --color-surface: #ffffff;
+    --color-surface: oklch(100% 0 0);
 }
 
 /* Dark Theme */

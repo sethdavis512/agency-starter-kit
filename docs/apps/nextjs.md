@@ -35,38 +35,38 @@ templates below.
 
 ```json
 {
-    "name": "web",
-    "version": "0.0.0",
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "dev": "next dev --turbo --port 5530",
-        "build": "next build",
-        "start": "next start --port ${PORT:-5530}",
-        "lint": "next lint",
-        "typecheck": "tsc --noEmit",
-        "test": "vitest run --passWithNoTests"
-    },
-    "dependencies": {
-        "@repo/auth": "*",
-        "@repo/database": "*",
-        "@repo/ui": "*",
-        "next": "^15.5.0",
-        "react": "^19.2.4",
-        "react-dom": "^19.2.4"
-    },
-    "devDependencies": {
-        "@repo/eslint-config": "*",
-        "@repo/typescript-config": "*",
-        "@tailwindcss/postcss": "^4.1.13",
-        "@types/node": "^22",
-        "@types/react": "^19.2.7",
-        "@types/react-dom": "^19.2.3",
-        "eslint": "^8.57.1",
-        "eslint-config-next": "^15.5.0",
-        "tailwindcss": "^4.1.13",
-        "typescript": "^5.9.2"
-    }
+  "name": "web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --turbo --port 5530",
+    "build": "next build",
+    "start": "next start --port ${PORT:-5530}",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@repo/auth": "*",
+    "@repo/database": "*",
+    "@repo/ui": "*",
+    "next": "^15.5.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^22",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^15.5.0",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2"
+  }
 }
 ```
 
@@ -82,10 +82,10 @@ Notes:
 ## 3. `apps/web/next.config.ts`
 
 ```ts
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    transpilePackages: ['@repo/ui'],
+  transpilePackages: ["@repo/ui"],
 };
 
 export default nextConfig;
@@ -110,9 +110,9 @@ in v4 (the theme lives in CSS via `@theme`).
 
 ```js
 export default {
-    plugins: {
-        '@tailwindcss/postcss': {},
-    },
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
 };
 ```
 
@@ -132,18 +132,18 @@ three `../` to reach the repo root, then `packages/ui` from there.
 ## 6. `apps/web/app/layout.tsx`
 
 ```tsx
-import './globals.css';
+import "./globals.css";
 
 export default function RootLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    return (
-        <html lang="en">
-            <body>{children}</body>
-        </html>
-    );
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
 }
 ```
 
@@ -152,15 +152,15 @@ export default function RootLayout({
 A smoke test page that pulls a component from `@repo/ui`:
 
 ```tsx
-import { Button } from '@repo/ui/button';
+import { Button } from "@repo/ui/button";
 
 export default function Home() {
-    return (
-        <main className="flex min-h-screen flex-col items-center justify-center gap-4">
-            <h1 className="text-4xl font-bold text-primary">Next.js on Turborepo</h1>
-            <Button variant="primary">Shared UI works</Button>
-        </main>
-    );
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
+      <h1 className="text-4xl font-bold text-primary">Next.js on Turborepo</h1>
+      <Button variant="primary">Shared UI works</Button>
+    </main>
+  );
 }
 ```
 
@@ -168,23 +168,23 @@ export default function Home() {
 
 ```json
 {
-    "extends": "@repo/typescript-config/base.json",
-    "compilerOptions": {
-        "target": "ES2022",
-        "lib": ["DOM", "DOM.Iterable", "ES2022"],
-        "jsx": "preserve",
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
-        "allowJs": true,
-        "noEmit": true,
-        "incremental": true,
-        "resolveJsonModule": true,
-        "plugins": [{ "name": "next" }],
-        "baseUrl": ".",
-        "paths": { "~/*": ["./*"] }
-    },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-    "exclude": ["node_modules"]
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "jsx": "preserve",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "resolveJsonModule": true,
+    "plugins": [{ "name": "next" }],
+    "baseUrl": ".",
+    "paths": { "~/*": ["./*"] }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
 ```
 
@@ -199,20 +199,20 @@ the root `turbo.json` `build.outputs` array. **Do not cache
 
 ```json
 {
-    "$schema": "https://turborepo.dev/schema.json",
-    "tasks": {
-        "build": {
-            "dependsOn": ["^build"],
-            "inputs": ["$TURBO_DEFAULT$", ".env*"],
-            "outputs": [
-                "dist/**",
-                "build/**",
-                "generated/**",
-                ".next/**",
-                "!.next/cache/**"
-            ]
-        }
+  "$schema": "https://turborepo.dev/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [
+        "dist/**",
+        "build/**",
+        "generated/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
     }
+  }
 }
 ```
 
@@ -220,11 +220,11 @@ the root `turbo.json` `build.outputs` array. **Do not cache
 
 Create a new Railway service and set:
 
-| Setting              | Value                                                                |
-|----------------------|----------------------------------------------------------------------|
+| Setting              | Value                                                                 |
+| -------------------- | --------------------------------------------------------------------- |
 | `NIXPACKS_BUILD_CMD` | `bun install --production=false && bunx turbo run build --filter=web` |
-| `NIXPACKS_START_CMD` | `bun run start`                                                      |
-| Watch paths          | `apps/web/**`, `packages/**`                                         |
+| `NIXPACKS_START_CMD` | `bun run start`                                                       |
+| Watch paths          | `apps/web/**`, `packages/**`                                          |
 
 Next.js reads `process.env.PORT` automatically, so no additional flag is
 needed on Railway.

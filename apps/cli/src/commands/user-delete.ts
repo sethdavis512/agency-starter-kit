@@ -10,7 +10,10 @@ export function registerUserDelete(program: Command) {
     .action(async (emailArg) => {
       const email =
         emailArg ??
-        (await input({ message: "User email:", validate: (v) => v.includes("@") || "Enter a valid email" }));
+        (await input({
+          message: "User email:",
+          validate: (v) => v.includes("@") || "Enter a valid email",
+        }));
 
       const user = await prisma.user.findUnique({
         where: { email },
