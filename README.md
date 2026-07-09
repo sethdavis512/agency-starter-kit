@@ -1,6 +1,10 @@
 # `Turborepo` Vite starter
 
-This is a community-maintained example. If you experience a problem, please submit a pull request with a fix. GitHub Issues will be closed.
+This is a template meant to be forked or copied as the starting point for
+your own project — see [Using this example](#using-this-example) below. If
+you spot a bug in the scaffolding itself (not in your fork), pull requests
+are welcome; see [CONTRIBUTING.md](./CONTRIBUTING.md) for what's in scope
+and how to validate a change before opening one.
 
 ## Local development database
 
@@ -52,3 +56,7 @@ This Turborepo has some additional tools already setup for you:
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
+
+## License
+
+[MIT](./LICENSE) — use this template freely for your own projects.
