@@ -26,6 +26,6 @@ export async function requireAdmin({ context }: any) {
     const user = context.get(userContext);
 
     if (!user || user.role !== 'admin') {
-        throw redirect('/no-access');
+        throw new Response('Forbidden', { status: 403 });
     }
 }

@@ -62,7 +62,7 @@ describe('requireAuth', () => {
 })
 
 describe('requireAdmin', () => {
-  it('redirects to /no-access when user is not an admin', async () => {
+  it('throws a 403 when user is not an admin', async () => {
     const entries = new Map()
     // We need to use the actual userContext key, but since it's imported internally,
     // we set up a context where .get() returns a non-admin user for any key
@@ -76,8 +76,7 @@ describe('requireAdmin', () => {
       expect.unreachable('should have thrown')
     } catch (response) {
       expect(response).toBeInstanceOf(Response)
-      expect((response as Response).status).toBe(302)
-      expect((response as Response).headers.get('Location')).toBe('/no-access')
+      expect((response as Response).status).toBe(403)
     }
   })
 
@@ -91,7 +90,7 @@ describe('requireAdmin', () => {
     await requireAdmin({ context })
   })
 
-  it('redirects when no user in context', async () => {
+  it('throws a 403 when no user in context', async () => {
     const context = {
       get: () => null,
       set: vi.fn(),
@@ -102,7 +101,7 @@ describe('requireAdmin', () => {
       expect.unreachable('should have thrown')
     } catch (response) {
       expect(response).toBeInstanceOf(Response)
-      expect((response as Response).status).toBe(302)
+      expect((response as Response).status).toBe(403)
     }
   })
 })
