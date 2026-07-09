@@ -121,16 +121,6 @@
         "globals": "^17.6.0",
       },
     },
-    "packages/test-utils": {
-      "name": "@repo/test-utils",
-      "version": "0.0.0",
-      "dependencies": {
-        "@repo/database": "*",
-      },
-      "peerDependencies": {
-        "vitest": "^4.0.0",
-      },
-    },
     "packages/typescript-config": {
       "name": "@repo/typescript-config",
       "version": "0.0.0",
@@ -509,8 +499,6 @@
     "@repo/database": ["@repo/database@workspace:packages/database"],
 
     "@repo/eslint-config": ["@repo/eslint-config@workspace:packages/eslint-config"],
-
-    "@repo/test-utils": ["@repo/test-utils@workspace:packages/test-utils"],
 
     "@repo/typescript-config": ["@repo/typescript-config@workspace:packages/typescript-config"],
 
