@@ -1,9 +1,11 @@
 import { createContext } from 'react-router';
 
-// User context to share authenticated user data between middleware and loaders
-export const userContext = createContext<{
+export interface AuthUser {
     id: string;
     email: string;
     name: string;
     role: string;
-} | null>(null);
+}
+
+// User context to share authenticated user data between middleware and loaders
+export const userContext = createContext<AuthUser | null>(null);
