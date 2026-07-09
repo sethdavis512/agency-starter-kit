@@ -18,6 +18,7 @@
     "e2e:report:portal": "playwright show-report playwright-report/portal",
     "e2e:report:admin": "playwright show-report playwright-report/admin",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "cli": "bun apps/cli/src/index.ts",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",

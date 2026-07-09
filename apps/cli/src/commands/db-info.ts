@@ -20,6 +20,8 @@ export function registerDbInfo(program: Command) {
       console.log(`account           ${accounts}`);
       console.log(`verification      ${verifications}`);
       console.log(`${"".padEnd(18)}${"-".repeat(5)}`);
-      console.log(`total             ${users + sessions + accounts + verifications}`);
+      console.log(
+        `total             ${users + sessions + accounts + verifications}`,
+      );
     });
 }

@@ -9,7 +9,7 @@ quickstarts for the popular choices.
 ## What ships out of the box
 
 | App    | Stack                 | Dev port | Purpose                    |
-|--------|-----------------------|----------|----------------------------|
+| ------ | --------------------- | -------- | -------------------------- |
 | portal | React Router 7 + Vite | 5520     | Customer-facing site       |
 | admin  | React Router 7 + Vite | 5510     | Internal admin console     |
 | cli    | Bun + Commander       | n/a      | Dev and ops automation CLI |
@@ -20,13 +20,13 @@ Pick the framework that fits the problem, then follow its dedicated guide.
 Each guide is self-contained: file contents, scripts, Railway wiring, and
 known gotchas.
 
-| Framework            | Best for                                               | Guide                                 |
-|----------------------|--------------------------------------------------------|---------------------------------------|
-| React Router 7       | Full-stack React with SSR and forms                    | See `apps/portal` and `apps/admin`    |
-| Next.js 15           | Mature ecosystem, App Router, ISR, enterprise SEO      | [docs/apps/nextjs.md](../docs/apps/nextjs.md)         |
-| Astro 5              | Content sites, marketing, blogs, minimal JS by default | [docs/apps/astro.md](../docs/apps/astro.md)           |
-| Docusaurus 3         | Versioned documentation with MDX and i18n              | [docs/apps/docusaurus.md](../docs/apps/docusaurus.md) |
-| Vite 7 + React SPA   | Internal tools, dashboards, client-only prototypes     | [docs/apps/vite.md](../docs/apps/vite.md)             |
+| Framework          | Best for                                               | Guide                                                 |
+| ------------------ | ------------------------------------------------------ | ----------------------------------------------------- |
+| React Router 7     | Full-stack React with SSR and forms                    | See `apps/portal` and `apps/admin`                    |
+| Next.js 15         | Mature ecosystem, App Router, ISR, enterprise SEO      | [docs/apps/nextjs.md](../docs/apps/nextjs.md)         |
+| Astro 5            | Content sites, marketing, blogs, minimal JS by default | [docs/apps/astro.md](../docs/apps/astro.md)           |
+| Docusaurus 3       | Versioned documentation with MDX and i18n              | [docs/apps/docusaurus.md](../docs/apps/docusaurus.md) |
+| Vite 7 + React SPA | Internal tools, dashboards, client-only prototypes     | [docs/apps/vite.md](../docs/apps/vite.md)             |
 
 > Nothing stops you from dropping in a completely different stack (SvelteKit,
 > SolidStart, Remix, TanStack Start, a Go or Rust binary, etc.). As long as the
@@ -44,18 +44,18 @@ Minimum viable:
 
 ```json
 {
-    "name": "<your-app-name>",
-    "version": "0.0.0",
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "dev": "<start the dev server>",
-        "build": "<produce a production build>",
-        "start": "<serve the production build>",
-        "lint": "<optional>",
-        "typecheck": "<optional>",
-        "test": "vitest run --passWithNoTests"
-    }
+  "name": "<your-app-name>",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "<start the dev server>",
+    "build": "<produce a production build>",
+    "start": "<serve the production build>",
+    "lint": "<optional>",
+    "typecheck": "<optional>",
+    "test": "vitest run --passWithNoTests"
+  }
 }
 ```
 
@@ -79,22 +79,22 @@ symlink:
 
 ```json
 {
-    "dependencies": {
-        "@repo/database": "*",
-        "@repo/ui": "*",
-        "@repo/auth": "*",
-        "@repo/utils": "*",
-        "@repo/validation": "*"
-    }
+  "dependencies": {
+    "@repo/database": "*",
+    "@repo/ui": "*",
+    "@repo/auth": "*",
+    "@repo/utils": "*",
+    "@repo/validation": "*"
+  }
 }
 ```
 
 Import with subpath exports, never deep relative paths:
 
 ```tsx
-import { Button } from '@repo/ui/button';
-import { prisma } from '@repo/database';
-import { auth } from '@repo/auth/server';
+import { Button } from "@repo/ui/button";
+import { prisma } from "@repo/database";
+import { auth } from "@repo/auth/server";
 ```
 
 ### 4. Build outputs Turbo knows about
@@ -132,12 +132,12 @@ The `@source` directive tells Tailwind v4 to scan `packages/ui` for class
 names. The number of `../` segments depends on where the CSS file lives
 relative to the repo root:
 
-| CSS file location                         | `@source` path                |
-|-------------------------------------------|-------------------------------|
-| `apps/<name>/app/app.css`                 | `../../../packages/ui`        |
-| `apps/<name>/app/globals.css`             | `../../../packages/ui`        |
-| `apps/<name>/src/index.css`               | `../../../packages/ui`        |
-| `apps/<name>/src/styles/global.css`       | `../../../../packages/ui`     |
+| CSS file location                   | `@source` path            |
+| ----------------------------------- | ------------------------- |
+| `apps/<name>/app/app.css`           | `../../../packages/ui`    |
+| `apps/<name>/app/globals.css`       | `../../../packages/ui`    |
+| `apps/<name>/src/index.css`         | `../../../packages/ui`    |
+| `apps/<name>/src/styles/global.css` | `../../../../packages/ui` |
 
 > Count the directory hops from the CSS file back to the repo root, then
 > append `packages/ui`. Getting this wrong is the most common reason
@@ -149,7 +149,7 @@ relative to the repo root:
 told to transform it:
 
 | Framework      | How to enable                                             |
-|----------------|-----------------------------------------------------------|
+| -------------- | --------------------------------------------------------- |
 | React Router 7 | Automatic (Vite handles workspace packages)               |
 | Vite SPA       | Automatic                                                 |
 | Next.js 15     | `transpilePackages: ['@repo/ui']` in `next.config.ts`     |
@@ -162,11 +162,11 @@ Every app deploys to its own Railway service. The monorepo uses Nixpacks
 with a custom build and start command so the full monorepo is available
 during the build.
 
-| Setting              | Value                                                                     |
-|----------------------|---------------------------------------------------------------------------|
-| `NIXPACKS_BUILD_CMD` | `bun install --production=false && bunx turbo run build --filter=<name>`  |
-| `NIXPACKS_START_CMD` | `bun run start`                                                           |
-| Watch paths          | `apps/<name>/**`, `packages/**`                                           |
+| Setting              | Value                                                                    |
+| -------------------- | ------------------------------------------------------------------------ |
+| `NIXPACKS_BUILD_CMD` | `bun install --production=false && bunx turbo run build --filter=<name>` |
+| `NIXPACKS_START_CMD` | `bun run start`                                                          |
+| Watch paths          | `apps/<name>/**`, `packages/**`                                          |
 
 The `bun run start` command runs against the app workspace, so make sure
 the new app's `package.json` has a working `start` script that binds to
@@ -227,14 +227,14 @@ avoid duplicate React copies in the root `node_modules`.
 
 ```json
 {
-    "overrides": {
-        "react": "19.2.4",
-        "react-dom": "19.2.4"
-    },
-    "resolutions": {
-        "react": "19.2.4",
-        "react-dom": "19.2.4"
-    }
+  "overrides": {
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "resolutions": {
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  }
 }
 ```
 

@@ -10,13 +10,17 @@ export function registerSessionRevoke(program: Command) {
     .option("--user <email>", "revoke all sessions for a user")
     .action(async (sessionId, options) => {
       if (options.user) {
-        const user = await prisma.user.findUnique({ where: { email: options.user } });
+        const user = await prisma.user.findUnique({
+          where: { email: options.user },
+        });
         if (!user) {
           console.error(`User ${options.user} not found.`);
           process.exit(1);
         }
 
-        const count = await prisma.session.count({ where: { userId: user.id } });
+        const count = await prisma.session.count({
+          where: { userId: user.id },
+        });
         if (count === 0) {
           console.log(`No sessions for ${options.user}.`);
           return;
@@ -39,7 +43,10 @@ export function registerSessionRevoke(program: Command) {
 
       const id =
         sessionId ??
-        (await input({ message: "Session ID:", validate: (v) => v.length > 0 || "Session ID is required" }));
+        (await input({
+          message: "Session ID:",
+          validate: (v) => v.length > 0 || "Session ID is required",
+        }));
 
       const session = await prisma.session.findUnique({ where: { id } });
       if (!session) {

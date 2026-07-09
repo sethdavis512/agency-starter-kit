@@ -1,8 +1,8 @@
 export {
-    ScrollAreaRoot,
-    ScrollAreaViewport,
-    ScrollAreaContent,
-    ScrollAreaScrollbar,
-    ScrollAreaThumb,
-    ScrollAreaCorner
-} from './ScrollArea';
+  ScrollAreaRoot,
+  ScrollAreaViewport,
+  ScrollAreaContent,
+  ScrollAreaScrollbar,
+  ScrollAreaThumb,
+  ScrollAreaCorner,
+} from "./ScrollArea";

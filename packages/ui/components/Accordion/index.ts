@@ -1,7 +1,7 @@
 export {
-    AccordionRoot,
-    AccordionItem,
-    AccordionHeader,
-    AccordionTrigger,
-    AccordionPanel
-} from './Accordion';
+  AccordionRoot,
+  AccordionItem,
+  AccordionHeader,
+  AccordionTrigger,
+  AccordionPanel,
+} from "./Accordion";
