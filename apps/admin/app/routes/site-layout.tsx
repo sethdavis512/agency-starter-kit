@@ -6,11 +6,13 @@ import { Sidebar } from "@repo/ui/sidebar";
 import { Container } from "@repo/ui/container";
 import { Outlet } from "react-router";
 import type { Route } from "./+types/site-layout";
-import { auth } from "@repo/auth/server";
+import { userContext } from "@repo/auth/context";
+import { populateSession } from "@repo/auth/middleware";
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const session = await auth.api.getSession({ headers: request.headers });
-  return { user: session?.user || null };
+export const middleware: Route.MiddlewareFunction[] = [populateSession];
+
+export async function loader({ context }: Route.LoaderArgs) {
+  return { user: context.get(userContext) };
 }
 
 export default function SiteLayoutRoute({ loaderData }: Route.ComponentProps) {
