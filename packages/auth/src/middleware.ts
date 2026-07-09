@@ -7,6 +7,7 @@ import { userContext } from './context';
  * If not authenticated, redirects to /sign-in.
  * If authenticated, sets user in context for downstream loaders/actions.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- tracked by TEC-272
 export async function requireAuth({ request, context }: any) {
     const session = await auth.api.getSession({ headers: request.headers });
 
@@ -22,6 +23,7 @@ export async function requireAuth({ request, context }: any) {
  * Must be used after requireAuth middleware.
  * Throws 403 if user is not an admin.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- tracked by TEC-272
 export async function requireAdmin({ context }: any) {
     const user = context.get(userContext);
 

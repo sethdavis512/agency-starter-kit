@@ -4,7 +4,7 @@
     "type": "module",
     "license": "MIT",
     "scripts": {
-        "lint": "eslint \"**/*.ts\"",
+        "lint": "eslint \"**/*.{ts,tsx}\"",
         "test": "vitest run --passWithNoTests",
         "test:watch": "vitest"
     },

@@ -10,6 +10,20 @@ const globals = require("globals");
  * walking up to the repo-root eslint.config.js.
  */
 module.exports = [
+  {
+    // Generated/build output is never hand-written; nothing here should be
+    // linted regardless of which glob a workspace's `lint` script passes.
+    ignores: [
+      "**/.react-router/**",
+      "**/build/**",
+      "**/dist/**",
+      "**/dist-ssr/**",
+      "**/generated/**",
+      "**/.turbo/**",
+      "**/playwright-report/**",
+      "**/test-results/**",
+    ],
+  },
   js.configs.recommended,
   {
     files: ["**/*.{ts,tsx}"],
@@ -23,6 +37,17 @@ module.exports = [
     rules: {
       ...tsPlugin.configs.recommended.rules,
       "@typescript-eslint/no-non-null-assertion": "off",
+      // TypeScript's own compiler already catches undefined references, and
+      // no-undef false-positives on ambient lib types (e.g. RequestInit).
+      "no-undef": "off",
+    },
+  },
+  {
+    // Test mocks routinely need to bypass strict typing (fake loader args,
+    // partial mock return values); relax only here, not for real source.
+    files: ["**/*.test.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
   prettier,
