@@ -1,5 +1,5 @@
 export {
-    CollapsibleRoot,
-    CollapsibleTrigger,
-    CollapsiblePanel
-} from './Collapsible';
+  CollapsibleRoot,
+  CollapsibleTrigger,
+  CollapsiblePanel,
+} from "./Collapsible";

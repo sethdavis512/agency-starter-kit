@@ -1,1 +1,1 @@
-export { CheckboxRoot, CheckboxIndicator, CheckboxGroup } from './Checkbox';
+export { CheckboxRoot, CheckboxIndicator, CheckboxGroup } from "./Checkbox";

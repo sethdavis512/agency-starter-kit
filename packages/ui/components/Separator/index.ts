@@ -1,1 +1,1 @@
-export { SeparatorRoot } from './Separator';
+export { SeparatorRoot } from "./Separator";

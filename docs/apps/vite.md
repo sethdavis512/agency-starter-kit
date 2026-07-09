@@ -35,37 +35,37 @@ below.
 
 ```json
 {
-    "name": "tools",
-    "version": "0.0.0",
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "preview": "vite preview",
-        "start": "serve -s dist -l ${PORT:-5560}",
-        "lint": "eslint .",
-        "typecheck": "tsc --noEmit",
-        "test": "vitest run --passWithNoTests",
-        "test:watch": "vitest"
-    },
-    "dependencies": {
-        "react": "^19.2.4",
-        "react-dom": "^19.2.4",
-        "serve": "^14.2.4"
-    },
-    "devDependencies": {
-        "@repo/typescript-config": "*",
-        "@repo/ui": "*",
-        "@tailwindcss/vite": "^4.1.13",
-        "@types/react": "^19.2.7",
-        "@types/react-dom": "^19.2.3",
-        "@vitejs/plugin-react": "^5.0.4",
-        "tailwindcss": "^4.1.13",
-        "typescript": "^5.9.2",
-        "vite": "^7.1.7",
-        "vite-tsconfig-paths": "^5.1.4"
-    }
+  "name": "tools",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "serve -s dist -l ${PORT:-5560}",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "serve": "^14.2.4"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "@repo/ui": "*",
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.0.4",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
 }
 ```
 
@@ -80,26 +80,26 @@ Notes:
 ## 3. `apps/tools/vite.config.ts`
 
 ```ts
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-    plugins: [react(), tailwindcss(), tsconfigPaths()],
-    server: {
-        port: 5560,
-        host: true,
-    },
-    preview: {
-        port: 5560,
-        host: true,
-    },
-    build: {
-        outDir: 'dist',
-        sourcemap: true,
-        target: 'esnext',
-    },
+  plugins: [react(), tailwindcss(), tsconfigPaths()],
+  server: {
+    port: 5560,
+    host: true,
+  },
+  preview: {
+    port: 5560,
+    host: true,
+  },
+  build: {
+    outDir: "dist",
+    sourcemap: true,
+    target: "esnext",
+  },
 });
 ```
 
@@ -113,15 +113,15 @@ Vite expects `index.html` at the app root, **not** inside `src/`.
 ```html
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Tools</title>
-    </head>
-    <body>
-        <div id="root"></div>
-        <script type="module" src="/src/main.tsx"></script>
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tools</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
 ```
 
@@ -140,15 +140,15 @@ which is three directories deep from the repo root (`src` -> `tools`
 ## 6. `apps/tools/src/main.tsx`
 
 ```tsx
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './App';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App";
 
-createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-        <App />
-    </StrictMode>
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
 );
 ```
 
@@ -157,15 +157,15 @@ createRoot(document.getElementById('root')!).render(
 Smoke test that pulls a component from `@repo/ui`:
 
 ```tsx
-import { Button } from '@repo/ui/button';
+import { Button } from "@repo/ui/button";
 
 export default function App() {
-    return (
-        <main className="flex min-h-screen flex-col items-center justify-center gap-4">
-            <h1 className="text-4xl font-bold text-primary">Vite SPA</h1>
-            <Button variant="primary">Shared UI works</Button>
-        </main>
-    );
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
+      <h1 className="text-4xl font-bold text-primary">Vite SPA</h1>
+      <Button variant="primary">Shared UI works</Button>
+    </main>
+  );
 }
 ```
 
@@ -177,13 +177,13 @@ strict options that are correct for a Vite SPA.
 
 ```json
 {
-    "extends": "@repo/typescript-config/vite.json",
-    "compilerOptions": {
-        "types": ["vite/client"],
-        "baseUrl": ".",
-        "paths": { "~/*": ["./src/*"] }
-    },
-    "include": ["src", "vite.config.ts"]
+  "extends": "@repo/typescript-config/vite.json",
+  "compilerOptions": {
+    "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": { "~/*": ["./src/*"] }
+  },
+  "include": ["src", "vite.config.ts"]
 }
 ```
 
@@ -195,7 +195,7 @@ Vite writes to `dist/`, which is already covered by the root
 ## 10. Railway deployment
 
 | Setting              | Value                                                                   |
-|----------------------|-------------------------------------------------------------------------|
+| -------------------- | ----------------------------------------------------------------------- |
 | `NIXPACKS_BUILD_CMD` | `bun install --production=false && bunx turbo run build --filter=tools` |
 | `NIXPACKS_START_CMD` | `bun run start`                                                         |
 | Watch paths          | `apps/tools/**`, `packages/**`                                          |

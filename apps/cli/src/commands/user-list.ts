@@ -27,12 +27,14 @@ export function registerUserList(program: Command) {
         return;
       }
 
-      console.log(`\n${"Name".padEnd(24)} ${"Email".padEnd(32)} ${"Role".padEnd(8)} ${"Verified".padEnd(10)} Created`);
+      console.log(
+        `\n${"Name".padEnd(24)} ${"Email".padEnd(32)} ${"Role".padEnd(8)} ${"Verified".padEnd(10)} Created`,
+      );
       console.log("-".repeat(100));
 
       for (const user of users) {
         console.log(
-          `${user.name.padEnd(24)} ${user.email.padEnd(32)} ${user.role.padEnd(8)} ${String(user.emailVerified).padEnd(10)} ${user.createdAt.toLocaleDateString()}`
+          `${user.name.padEnd(24)} ${user.email.padEnd(32)} ${user.role.padEnd(8)} ${String(user.emailVerified).padEnd(10)} ${user.createdAt.toLocaleDateString()}`,
         );
       }
 

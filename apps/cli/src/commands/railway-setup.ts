@@ -10,7 +10,9 @@ export function registerRailwaySetup(program: Command) {
       try {
         await $`command -v railway`.quiet();
       } catch {
-        console.error("Railway CLI not found. Install with: brew install railway");
+        console.error(
+          "Railway CLI not found. Install with: brew install railway",
+        );
         process.exit(1);
       }
 
@@ -67,8 +69,12 @@ export function registerRailwaySetup(program: Command) {
       await $`railway domain --service admin`;
 
       console.log("\nSetup complete! Next steps:");
-      console.log("  1. Set BETTER_AUTH_SECRET and BETTER_AUTH_URL for each service");
-      console.log("  2. Copy DATABASE_URL from the Postgres plugin to each service");
+      console.log(
+        "  1. Set BETTER_AUTH_SECRET and BETTER_AUTH_URL for each service",
+      );
+      console.log(
+        "  2. Copy DATABASE_URL from the Postgres plugin to each service",
+      );
       console.log("  3. Run: cli deploy");
     });
 }

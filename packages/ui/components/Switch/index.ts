@@ -1,1 +1,1 @@
-export { SwitchRoot, SwitchThumb } from './Switch';
+export { SwitchRoot, SwitchThumb } from "./Switch";
