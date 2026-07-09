@@ -5,6 +5,7 @@ import { Card } from "@repo/ui/card";
 import { PageHeader } from "@repo/ui/page-header";
 import { User, Mail, Calendar, Shield } from "@repo/utils/icons";
 import { formatDate } from "@repo/utils/date";
+import { BRAND_NAME } from "@repo/utils/brand";
 
 export async function loader({ context }: Route.LoaderArgs) {
   const sessionUser = context.get(userContext);
@@ -35,7 +36,7 @@ export default function ProfileRoute({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <title>Profile | Stealthy Chicken Admin</title>
+      <title>Profile | {BRAND_NAME} Admin</title>
       <PageHeader title="My Profile" className="mb-6" />
 
       <Card className="max-w-md">

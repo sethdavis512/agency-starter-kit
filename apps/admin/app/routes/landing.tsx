@@ -3,6 +3,7 @@ import { AppLink } from "@repo/ui/app-link";
 import { redirect } from "react-router";
 import type { Route } from "./+types/landing";
 import { auth } from "@repo/auth/server";
+import { BRAND_NAME } from "@repo/utils/brand";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await auth.api.getSession({ headers: request.headers });
@@ -15,11 +16,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 export default function Landing() {
   return (
     <>
-      <title>Stealthy Chicken Admin</title>
+      <title>{BRAND_NAME} Admin</title>
       <div className="flex flex-1 flex-col items-center justify-center py-24 text-center">
-        <h1 className="text-5xl font-bold tracking-tight">
-          🐔 Stealthy Chicken
-        </h1>
+        <h1 className="text-5xl font-bold tracking-tight">🐔 {BRAND_NAME}</h1>
         <p className="mt-4 max-w-md text-lg text-zinc-600">
           Admin portal. Sign in to manage your operations.
         </p>
