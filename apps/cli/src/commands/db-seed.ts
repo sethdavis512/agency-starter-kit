@@ -7,12 +7,15 @@ export function registerDbSeed(program: Command) {
     .command("db:seed")
     .description("Run database seed")
     .option("--reset", "reset the database before seeding")
+    .option("--yes", "skip the reset confirmation prompt")
     .action(async (options) => {
       if (options.reset) {
-        const yes = await confirm({
-          message: "This will drop all data and re-seed. Continue?",
-          default: false,
-        });
+        const yes =
+          options.yes ??
+          (await confirm({
+            message: "This will drop all data and re-seed. Continue?",
+            default: false,
+          }));
 
         if (!yes) {
           console.log("Cancelled.");
