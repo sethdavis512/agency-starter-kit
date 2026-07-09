@@ -35,6 +35,9 @@ export function registerUserDelete(program: Command) {
         return;
       }
 
+      // Hard delete is intentional here: User/Session/Account are Better-Auth-managed,
+      // and a `deletedAt` soft delete wouldn't be honored by Better Auth's own auth
+      // queries without also patching that layer. See CLAUDE.md "Authentication".
       await prisma.user.delete({ where: { id: user.id } });
       console.log(`Deleted user ${email}.`);
     });

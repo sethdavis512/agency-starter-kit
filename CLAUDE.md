@@ -92,6 +92,7 @@ Both apps use Better Auth via `@repo/auth`:
 - Routes `sign-in`, `sign-up`, `sign-out`, and the catch-all `api/auth/*` handler wire the flow; they are identical across portal and admin.
 - Protected sections live under `protected-layout.tsx`, which calls `requireAuth` from `@repo/auth/middleware`. Auth checks gate access only — they do not check role.
 - Server-side user access goes through `@repo/auth/context`; never import the Prisma client directly in routes.
+- `cli user:delete` performs a hard delete (cascading to `Session`/`Account`) rather than a soft delete. This is intentional: `User`, `Session`, and `Account` are Better-Auth-managed tables, and Better Auth's own queries (sign-in, session lookup) don't know about a `deletedAt` column, so a soft-deleted user would still be able to authenticate unless Better Auth's queries were also patched to filter it — a larger change than the CLI command warrants. If soft delete becomes a real requirement, it needs to be implemented at the Better Auth integration layer, not just the schema.
 
 ## Database Connection
 
