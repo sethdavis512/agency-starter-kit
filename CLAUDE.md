@@ -72,7 +72,6 @@ Turborepo monorepo with two React Router 7 apps sharing packages.
 - `@repo/utils` — Small shared helpers. Subpaths: `./` (re-exports `tiny-invariant`), `./icons` (re-exports `lucide-react`), `./date` (date formatting).
 - `@repo/ui-mcp` — Standalone MCP **server binary** (`ui-mcp-server`) that exposes the `@repo/ui` design system to AI assistants (component/variant lookup, token values, design-rule validation). NOT an app dependency — nothing imports it.
 - `@repo/validation` — Placeholder. No subpath exports declared yet (previously advertised `./vehicle`, `./appointment`, `./repair` pointing at nonexistent files); not imported anywhere. Add exports back once real schema files exist.
-- `@repo/test-utils` — Vitest DB/auth test helpers. Wired up but currently unused by any test.
 - `@repo/typescript-config` — Shared tsconfig presets (`base.json`, `vite.json`)
 - `@repo/eslint-config` — Shared ESLint configuration (flat config; consumed by root `eslint.config.js`)
 
