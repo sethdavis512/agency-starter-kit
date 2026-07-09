@@ -52,8 +52,8 @@ templates below.
     "@repo/database": "*",
     "@repo/ui": "*",
     "next": "^15.5.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",

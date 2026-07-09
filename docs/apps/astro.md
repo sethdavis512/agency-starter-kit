@@ -53,8 +53,8 @@ generated files with the templates below.
     "@astrojs/react": "^5.0.3",
     "@repo/ui": "*",
     "astro": "^5.10.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@repo/typescript-config": "*",
@@ -72,7 +72,7 @@ Notes:
 - `@astrojs/react` 5.x supports React 19.
 - `@astrojs/node` is the SSR adapter. Drop it if you only need static
   output.
-- Pinning `react` / `react-dom` to `19.2.4` keeps Astro on the same
+- Pinning `react` / `react-dom` to `19.2.7` keeps Astro on the same
   version as `portal` and `admin`.
 - `astro preview` is **dev only**. Production on Railway uses
   `node ./dist/server/entry.mjs` via the `start` script.

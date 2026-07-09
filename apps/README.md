@@ -228,12 +228,12 @@ avoid duplicate React copies in the root `node_modules`.
 ```json
 {
   "overrides": {
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
   },
   "resolutions": {
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
   }
 }
 ```
