@@ -5,10 +5,38 @@ import { auth } from "@repo/auth/server";
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
-const DEFAULT_PASSWORD = "asdfasdf";
+const LOCAL_DB_HOSTS = new Set(["localhost", "127.0.0.1"]);
+
+function isLocalDatabase(databaseUrl: string | undefined) {
+  if (!databaseUrl) return false;
+  try {
+    return LOCAL_DB_HOSTS.has(new URL(databaseUrl).hostname);
+  } catch {
+    return false;
+  }
+}
+
+function resolveSeedPassword() {
+  if (process.env.SEED_PASSWORD) {
+    return process.env.SEED_PASSWORD;
+  }
+
+  if (isLocalDatabase(process.env.DATABASE_URL)) {
+    // Known, fixed credential relied on by e2e/helpers/auth.ts (SEEDED_USER)
+    // for local dev and CI runs against a local Postgres.
+    return "asdfasdf";
+  }
+
+  throw new Error(
+    "Refusing to seed a non-local DATABASE_URL without an explicit SEED_PASSWORD. " +
+      "Set SEED_PASSWORD to a strong value before seeding a shared/staging/deployed database.",
+  );
+}
+
+const DEFAULT_PASSWORD = resolveSeedPassword();
 
 const users = [
-  { email: "seth@mail.com", name: "Seth Davis", role: "admin" },
+  { email: "admin@example.com", name: "Seth Davis", role: "admin" },
   {
     email: "diana.martinez@example.com",
     name: "Diana Martinez",

@@ -1,7 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 
 export const SEEDED_USER = {
-  email: "seth@mail.com",
+  email: "admin@example.com",
   password: "asdfasdf",
 } as const;
 
