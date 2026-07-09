@@ -34,7 +34,7 @@
     "turbo": "^2.9.18",
     "vitest": "^4.1.9"
   },
-  "name": "stealthy-chicken",
+  "name": "agency-starter-kit",
   "packageManager": "bun@1.2.17",
   "workspaces": [
     "apps/*",

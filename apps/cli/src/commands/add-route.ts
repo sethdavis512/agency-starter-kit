@@ -22,6 +22,7 @@ export function generateRouteFileContent({
 
   imports.push(`import type { Route } from './+types/${routeName}';`);
   imports.push(`import { PageHeader } from '@repo/ui/page-header';`);
+  imports.push(`import { BRAND_NAME } from '@repo/utils/brand';`);
 
   if (needsLoader) {
     const loaderBody = isProtected
@@ -49,8 +50,7 @@ ${loaderBody}
       .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
       .join("") + "Route";
 
-  const titleSuffix =
-    app === "admin" ? "Stealthy Chicken Admin" : "Stealthy Chicken";
+  const titleSuffix = app === "admin" ? "{BRAND_NAME} Admin" : "{BRAND_NAME}";
   const pageTitle = routeName
     .split("-")
     .map((s) => s.charAt(0).toUpperCase() + s.slice(1))

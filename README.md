@@ -31,6 +31,23 @@ bun run dev
 
 Docker is optional — if you already have a `DATABASE_URL`, skip `db:up` and just set it in the three `.env` files. Stop the local database with `bun run db:down` (data persists in a named volume).
 
+## Rebranding / placeholder content
+
+This repo ships with a placeholder "🐔 Stealthy Chicken" demo brand baked into
+the UI shell and CLI scaffolder so the apps aren't blank out of the box. It is
+**not** meant to ship to production — replace it before launching a real app:
+
+- `package.json` (`name`) — root workspace package name.
+- `packages/utils/brand.ts` — the single `BRAND_NAME` constant consumed by
+  `@repo/ui`'s `Header`, `Sidebar`, and `Footer`, and by both apps' landing,
+  dashboard, and profile route titles. Change the value here to rebrand
+  everywhere at once.
+- `apps/portal/app/routes/landing.tsx` and `apps/admin/app/routes/landing.tsx`
+  — landing page copy (beyond the brand name itself).
+- `apps/cli/src/commands/add-route.ts` — the `add:route` scaffolder generates
+  new route files that import `BRAND_NAME` from `@repo/utils/brand`, so newly
+  scaffolded routes pick up a rebrand automatically.
+
 ## Using this example
 
 Clone or use this repo as a GitHub template, then follow
