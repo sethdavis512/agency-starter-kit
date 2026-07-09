@@ -1,87 +1,69 @@
-# Welcome to React Router!
+# Portal
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Customer-facing app in the agency-starter-kit monorepo. Built with
+[React Router 7](https://reactrouter.com/) (framework mode, SSR enabled) +
+Vite + Tailwind CSS v4.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
-
-## Features
-
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+`portal` and `admin` are a near-identical scaffold pair: same routes, same
+auth flow, same shared `@repo/*` packages — they differ only by dev port and
+a UI `variant` prop used for branding. There is no role-based access control
+yet; `admin` is not gated to admin users. Treat the duplication as template
+scaffolding, not a divergent product.
 
 ## Getting Started
 
-### Installation
+Run everything from the **repo root**, not from `apps/portal`. Bun workspaces
+hoist dependencies and create the `@repo/*` symlinks at the root.
 
-Install the dependencies:
+### Installation
 
 ```bash
 bun install
 ```
 
-### Development
+### Environment
 
-Start the development server with HMR:
+Copy `.env.example` to `.env` in this directory and fill in `DATABASE_URL`
+(matching `packages/database/.env`) and `BETTER_AUTH_SECRET`. See
+`.env.example` for details on each variable.
+
+### Database
 
 ```bash
-bun run dev
+bun run db:up        # start local Postgres (optional, from repo root)
+bun run cli db:setup # generate + push + seed
 ```
 
-Your application will be available at `http://localhost:5173`.
+### Development
+
+```bash
+bun run dev --filter=portal
+```
+
+The app is available at **`http://localhost:5520`** (not the React Router
+template default of 5173 — see `vite.config.ts`).
+
+### Authentication
+
+Auth is handled by the shared `@repo/auth` package (Better Auth). Routes
+`sign-in`, `sign-up`, `sign-out`, and `api/auth/*` wire the flow. Protected
+routes live under `protected-layout.tsx`, which calls `requireAuth` — this
+gates access only, it does not check role.
 
 ## Building for Production
 
-Create a production build:
-
 ```bash
-bun run build
+bun run build --filter=portal
 ```
 
 ## Deployment
 
-### Docker Deployment
+Deployed to Railway. See the repo root `CLAUDE.md` for the build command and
+watch paths.
 
-To build and run using Docker:
+## Testing
 
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+bun run test --filter=portal      # unit tests (Vitest)
+bun run e2e:portal                # Playwright e2e (from repo root)
 ```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `bun run build`
-
-```
-├── package.json
-├── bun.lock
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
