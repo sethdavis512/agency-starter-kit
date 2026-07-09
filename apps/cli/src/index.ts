@@ -18,10 +18,7 @@ import { registerLogs } from "./commands/logs";
 import { registerRailwayStatus } from "./commands/railway-status";
 import { registerRailwaySetup } from "./commands/railway-setup";
 
-program
-  .name("cli")
-  .description("Agency Starter Kit CLI")
-  .version("0.0.1");
+program.name("cli").description("Agency Starter Kit CLI").version("0.0.1");
 
 // Database
 registerDbStatus(program);

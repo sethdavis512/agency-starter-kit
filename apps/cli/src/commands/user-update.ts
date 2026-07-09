@@ -1,6 +1,7 @@
 import type { Command } from "commander";
 import { input, select } from "@inquirer/prompts";
 import { prisma } from "@repo/database";
+import { isValidRole, USER_ROLES } from "../lib/roles";
 
 export function registerUserUpdate(program: Command) {
   program
@@ -12,7 +13,10 @@ export function registerUserUpdate(program: Command) {
     .action(async (emailArg, options) => {
       const email =
         emailArg ??
-        (await input({ message: "User email:", validate: (v) => v.includes("@") || "Enter a valid email" }));
+        (await input({
+          message: "User email:",
+          validate: (v) => v.includes("@") || "Enter a valid email",
+        }));
 
       const user = await prisma.user.findUnique({ where: { email } });
 
@@ -22,8 +26,14 @@ export function registerUserUpdate(program: Command) {
       }
 
       const name =
-        options.name ??
-        (await input({ message: "Name:", default: user.name }));
+        options.name ?? (await input({ message: "Name:", default: user.name }));
+
+      if (options.role && !isValidRole(options.role)) {
+        console.error(
+          `Invalid role "${options.role}". Must be one of: ${USER_ROLES.join(", ")}.`,
+        );
+        process.exit(1);
+      }
 
       const role =
         options.role ??

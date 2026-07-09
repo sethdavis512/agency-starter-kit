@@ -1,2 +1,2 @@
-export { ProfileCard } from './ProfileCard';
-export type { ProfileCardProps } from './ProfileCard';
+export { ProfileCard } from "./ProfileCard";
+export type { ProfileCardProps } from "./ProfileCard";

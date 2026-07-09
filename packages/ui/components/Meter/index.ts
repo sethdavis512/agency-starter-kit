@@ -1,7 +1,7 @@
 export {
-    MeterRoot,
-    MeterLabel,
-    MeterTrack,
-    MeterIndicator,
-    MeterValue
-} from './Meter';
+  MeterRoot,
+  MeterLabel,
+  MeterTrack,
+  MeterIndicator,
+  MeterValue,
+} from "./Meter";

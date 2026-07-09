@@ -35,35 +35,35 @@ generated files with the templates below.
 
 ```json
 {
-    "name": "marketing",
-    "version": "0.0.0",
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "dev": "astro dev",
-        "build": "astro build",
-        "preview": "astro preview",
-        "start": "node ./dist/server/entry.mjs",
-        "typecheck": "astro check",
-        "lint": "eslint .",
-        "test": "vitest run --passWithNoTests"
-    },
-    "dependencies": {
-        "@astrojs/node": "^9.2.0",
-        "@astrojs/react": "^5.0.3",
-        "@repo/ui": "*",
-        "astro": "^5.10.0",
-        "react": "^19.2.4",
-        "react-dom": "^19.2.4"
-    },
-    "devDependencies": {
-        "@repo/typescript-config": "*",
-        "@tailwindcss/vite": "^4.1.13",
-        "@types/react": "^19.2.7",
-        "@types/react-dom": "^19.2.3",
-        "tailwindcss": "^4.1.13",
-        "typescript": "^5.9.2"
-    }
+  "name": "marketing",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "start": "node ./dist/server/entry.mjs",
+    "typecheck": "astro check",
+    "lint": "eslint .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.2.0",
+    "@astrojs/react": "^5.0.3",
+    "@repo/ui": "*",
+    "astro": "^5.10.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2"
+  }
 }
 ```
 
@@ -82,24 +82,24 @@ Notes:
 SSR mode with React, Tailwind v4, and the Node adapter:
 
 ```js
-import { defineConfig } from 'astro/config';
-import react from '@astrojs/react';
-import node from '@astrojs/node';
-import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from "astro/config";
+import react from "@astrojs/react";
+import node from "@astrojs/node";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-    output: 'server',
-    adapter: node({ mode: 'standalone' }),
-    server: { host: true, port: 5540 },
-    integrations: [react()],
-    vite: {
-        plugins: [tailwindcss()],
-        ssr: {
-            // Force Vite to bundle @repo/ui during SSR because the
-            // package ships raw TSX, not compiled JS.
-            noExternal: ['@repo/ui'],
-        },
+  output: "server",
+  adapter: node({ mode: "standalone" }),
+  server: { host: true, port: 5540 },
+  integrations: [react()],
+  vite: {
+    plugins: [tailwindcss()],
+    ssr: {
+      // Force Vite to bundle @repo/ui during SSR because the
+      // package ships raw TSX, not compiled JS.
+      noExternal: ["@repo/ui"],
     },
+  },
 });
 ```
 
@@ -188,15 +188,15 @@ and the React JSX runtime. Extend Astro's preset, not the repo's shared
 
 ```json
 {
-    "extends": "astro/tsconfigs/strict",
-    "compilerOptions": {
-        "jsx": "react-jsx",
-        "jsxImportSource": "react",
-        "baseUrl": ".",
-        "paths": { "~/*": ["./src/*"] }
-    },
-    "include": [".astro/types.d.ts", "**/*"],
-    "exclude": ["dist"]
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "baseUrl": ".",
+    "paths": { "~/*": ["./src/*"] }
+  },
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"]
 }
 ```
 
@@ -208,16 +208,11 @@ content collection cache. Add it to the root `turbo.json`:
 
 ```json
 {
-    "tasks": {
-        "build": {
-            "outputs": [
-                "dist/**",
-                "build/**",
-                "generated/**",
-                ".astro/**"
-            ]
-        }
+  "tasks": {
+    "build": {
+      "outputs": ["dist/**", "build/**", "generated/**", ".astro/**"]
     }
+  }
 }
 ```
 
@@ -226,7 +221,7 @@ content collection cache. Add it to the root `turbo.json`:
 ### SSR (recommended when you want loaders or forms)
 
 | Setting              | Value                                                                       |
-|----------------------|-----------------------------------------------------------------------------|
+| -------------------- | --------------------------------------------------------------------------- |
 | `NIXPACKS_BUILD_CMD` | `bun install --production=false && bunx turbo run build --filter=marketing` |
 | `NIXPACKS_START_CMD` | `bun run start`                                                             |
 | Watch paths          | `apps/marketing/**`, `packages/**`                                          |

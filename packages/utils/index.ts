@@ -1,1 +1,1 @@
-export { default as invariant } from 'tiny-invariant';
+export { default as invariant } from "tiny-invariant";

@@ -12,7 +12,9 @@ export function registerSessionList(program: Command) {
       };
 
       if (options.user) {
-        const user = await prisma.user.findUnique({ where: { email: options.user } });
+        const user = await prisma.user.findUnique({
+          where: { email: options.user },
+        });
         if (!user) {
           console.error(`User ${options.user} not found.`);
           process.exit(1);
@@ -31,12 +33,14 @@ export function registerSessionList(program: Command) {
         return;
       }
 
-      console.log(`\n${"User".padEnd(24)} ${"IP".padEnd(18)} ${"Expires".padEnd(24)} ID`);
+      console.log(
+        `\n${"User".padEnd(24)} ${"IP".padEnd(18)} ${"Expires".padEnd(24)} ID`,
+      );
       console.log("-".repeat(90));
 
       for (const s of sessions) {
         console.log(
-          `${s.user.email.padEnd(24)} ${(s.ipAddress ?? "unknown").padEnd(18)} ${s.expiresAt.toLocaleString().padEnd(24)} ${s.id}`
+          `${s.user.email.padEnd(24)} ${(s.ipAddress ?? "unknown").padEnd(18)} ${s.expiresAt.toLocaleString().padEnd(24)} ${s.id}`,
         );
       }
 
