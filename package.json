@@ -12,6 +12,7 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
+    "test:coverage": "vitest run --coverage",
     "e2e": "playwright test --config playwright.config.ts",
     "e2e:portal": "PLAYWRIGHT_ARTIFACT_SUFFIX=portal playwright test --config playwright.config.ts --project=portal",
     "e2e:admin": "PLAYWRIGHT_ARTIFACT_SUFFIX=admin playwright test --config playwright.config.ts --project=admin",
