@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { requireAuth, requireAdmin } from "./middleware";
+import { populateSession, requireAuth, requireAdmin } from "./middleware";
 
 vi.mock("./auth.server", () => ({
   auth: {
@@ -23,21 +23,19 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-describe("requireAuth", () => {
-  it("redirects to /sign-in when no session exists", async () => {
+describe("populateSession", () => {
+  it("sets context to null when no session exists", async () => {
     vi.mocked(auth.api.getSession).mockResolvedValue(null);
 
+    const entries = new Map();
+    const context = createContext(entries);
     const request = new Request("http://localhost/dashboard");
-    const context = createContext();
 
-    try {
-      await requireAuth({ request, context });
-      expect.unreachable("should have thrown");
-    } catch (response) {
-      expect(response).toBeInstanceOf(Response);
-      expect((response as Response).status).toBe(302);
-      expect((response as Response).headers.get("Location")).toBe("/sign-in");
-    }
+    await populateSession({ request, context });
+
+    expect(entries.size).toBe(1);
+    const storedUser = [...entries.values()][0];
+    expect(storedUser).toBeNull();
   });
 
   it("sets user in context when session exists", async () => {
@@ -51,13 +49,61 @@ describe("requireAuth", () => {
     const context = createContext(entries);
     const request = new Request("http://localhost/dashboard");
 
-    await requireAuth({ request, context });
+    await populateSession({ request, context });
 
     // The middleware should have set the user in context
     // We can't check the exact key (it's the userContext symbol), but we can verify set was called
     expect(entries.size).toBe(1);
     const storedUser = [...entries.values()][0];
     expect(storedUser).toEqual(user);
+  });
+
+  it("passes request headers to getSession", async () => {
+    vi.mocked(auth.api.getSession).mockResolvedValue(null);
+
+    const context = createContext();
+    const request = new Request("http://localhost/dashboard", {
+      headers: { Cookie: "session=abc" },
+    });
+
+    await populateSession({ request, context });
+
+    expect(auth.api.getSession).toHaveBeenCalledWith({
+      headers: request.headers,
+    });
+  });
+});
+
+describe("requireAuth", () => {
+  it("redirects to /sign-in when no user in context", async () => {
+    const context = { get: () => null, set: vi.fn() };
+
+    try {
+      await requireAuth({ context });
+      expect.unreachable("should have thrown");
+    } catch (response) {
+      expect(response).toBeInstanceOf(Response);
+      expect((response as Response).status).toBe(302);
+      expect((response as Response).headers.get("Location")).toBe("/sign-in");
+    }
+  });
+
+  it("does not fetch the session itself", async () => {
+    const context = {
+      get: () => ({ id: "1", email: "a@b.com", name: "Alice", role: "user" }),
+      set: vi.fn(),
+    };
+
+    await requireAuth({ context });
+
+    expect(auth.api.getSession).not.toHaveBeenCalled();
+  });
+
+  it("passes through when a user is already in context", async () => {
+    const user = { id: "1", email: "a@b.com", name: "Alice", role: "user" };
+    const context = { get: () => user, set: vi.fn() };
+
+    await expect(requireAuth({ context })).resolves.toBeUndefined();
   });
 });
 

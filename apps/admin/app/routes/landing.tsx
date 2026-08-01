@@ -2,12 +2,11 @@ import { Button } from "@repo/ui/button";
 import { AppLink } from "@repo/ui/app-link";
 import { redirect } from "react-router";
 import type { Route } from "./+types/landing";
-import { auth } from "@repo/auth/server";
+import { userContext } from "@repo/auth/context";
 import { BRAND_NAME } from "@repo/utils/brand";
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (session?.user) {
+export async function loader({ context }: Route.LoaderArgs) {
+  if (context.get(userContext)) {
     throw redirect("/dashboard");
   }
   return null;

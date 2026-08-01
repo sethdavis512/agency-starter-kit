@@ -92,7 +92,8 @@ Turborepo monorepo with two React Router 7 apps sharing packages.
 Both apps use Better Auth via `@repo/auth`:
 
 - Routes `sign-in`, `sign-up`, `sign-out`, and the catch-all `api/auth/*` handler wire the flow; they are identical across portal and admin.
-- Protected sections live under `protected-layout.tsx`, which calls `requireAuth` from `@repo/auth/middleware`. Auth checks gate access only — they do not check role.
+- `site-layout.tsx` (the outermost layout) runs `populateSession` middleware, which fetches the session once per request and stores it in `userContext`. Every descendant loader — `landing`, `sign-in`, `sign-up`, and everything under `protected-layout` — reads the user via `context.get(userContext)` instead of calling `auth.api.getSession` again.
+- Protected sections live under `protected-layout.tsx`, which calls `requireAuth` from `@repo/auth/middleware`. `requireAuth` only reads the context `populateSession` already populated and redirects to `/sign-in` if empty — it does not fetch the session itself. Auth checks gate access only — they do not check role.
 - Server-side user access goes through `@repo/auth/context`; never import the Prisma client directly in routes.
 - `cli user:delete` performs a hard delete (cascading to `Session`/`Account`) rather than a soft delete. This is intentional: `User`, `Session`, and `Account` are Better-Auth-managed tables, and Better Auth's own queries (sign-in, session lookup) don't know about a `deletedAt` column, so a soft-deleted user would still be able to authenticate unless Better Auth's queries were also patched to filter it — a larger change than the CLI command warrants. If soft delete becomes a real requirement, it needs to be implemented at the Better Auth integration layer, not just the schema.
 

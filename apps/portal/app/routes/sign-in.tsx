@@ -1,11 +1,10 @@
 import { SignInForm } from "@repo/ui/sign-in-form";
 import { redirect, useNavigate } from "react-router";
 import type { Route } from "./+types/sign-in";
-import { auth } from "@repo/auth/server";
+import { userContext } from "@repo/auth/context";
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (session?.user) {
+export async function loader({ context }: Route.LoaderArgs) {
+  if (context.get(userContext)) {
     throw redirect("/dashboard");
   }
   return null;

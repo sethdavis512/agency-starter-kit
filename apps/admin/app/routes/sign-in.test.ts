@@ -1,58 +1,42 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { loader } from "./sign-in";
+import { userContext } from "@repo/auth/context";
 
-vi.mock("@repo/auth/server", () => ({
-  auth: {
-    api: {
-      getSession: vi.fn(),
-    },
-  },
-}));
-
-import { auth } from "@repo/auth/server";
-
-beforeEach(() => {
-  vi.clearAllMocks();
-});
+function createContext(user: unknown) {
+  return {
+    get: (key: unknown) => (key === userContext ? user : undefined),
+    set: () => {},
+  };
+}
 
 describe("sign-in loader", () => {
-  it("returns null when no session exists", async () => {
-    vi.mocked(auth.api.getSession).mockResolvedValue(null);
-
+  it("returns null when no user in context", async () => {
     const request = new Request("http://localhost:5510/sign-in");
-    const result = await loader({ request, params: {}, context: {} } as any);
+    const result = await loader({
+      request,
+      params: {},
+      context: createContext(null),
+    } as any);
 
     expect(result).toBeNull();
   });
 
-  it("redirects to /dashboard when session exists", async () => {
-    vi.mocked(auth.api.getSession).mockResolvedValue({
-      user: { id: "1", email: "test@test.com", name: "Test" },
-      session: { id: "s1", token: "t1" },
-    } as any);
-
+  it("redirects to /dashboard when a user is in context", async () => {
     const request = new Request("http://localhost:5510/sign-in");
+    const context = createContext({
+      id: "1",
+      email: "test@test.com",
+      name: "Test",
+      role: "user",
+    });
 
     try {
-      await loader({ request, params: {}, context: {} } as any);
+      await loader({ request, params: {}, context } as any);
       expect.unreachable("should have thrown a redirect");
     } catch (response) {
       expect(response).toBeInstanceOf(Response);
       expect((response as Response).status).toBe(302);
       expect((response as Response).headers.get("Location")).toBe("/dashboard");
     }
-  });
-
-  it("passes request headers to getSession", async () => {
-    vi.mocked(auth.api.getSession).mockResolvedValue(null);
-
-    const request = new Request("http://localhost:5510/sign-in", {
-      headers: { Cookie: "session=abc" },
-    });
-    await loader({ request, params: {}, context: {} } as any);
-
-    expect(auth.api.getSession).toHaveBeenCalledWith({
-      headers: request.headers,
-    });
   });
 });
