@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Link, NavLink, type NavLinkRenderProps } from "react-router";
 import { LayoutDashboard, User, LogOut, X } from "@repo/utils/icons";
+import { BRAND_NAME } from "@repo/utils/brand";
 import { cn } from "../utils/cn";
 
 interface SidebarProps {
@@ -101,7 +102,7 @@ export function Sidebar({
         {isMobile && (
           <div className="flex items-center justify-between px-4 py-4">
             <Link to="/" onClick={onClose}>
-              <p className="text-xl font-bold">🐔 Stealthy Chicken</p>
+              <p className="text-xl font-bold">🐔 {BRAND_NAME}</p>
             </Link>
             <button
               ref={closeButtonRef}

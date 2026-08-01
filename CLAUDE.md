@@ -26,7 +26,9 @@ bun run format           # Prettier format all files
 
 # Unit tests (Vitest)
 bun run test             # Run all unit tests across workspaces (via turbo)
-bun run test:watch       # Vitest watch mode
+# test:watch with no filter launches a persistent Vitest watcher in all 9 workspaces at
+# once (9 competing TUIs in one terminal) — always scope it to the package you're on:
+bun run test:watch --filter=@repo/auth    # or --filter=portal, --filter=@repo/utils, etc.
 # Single test: run vitest directly inside the package (e.g. packages/auth)
 bunx vitest run src/auth.server.test.ts   # one file
 bunx vitest run -t "revokes a session"    # by test name
@@ -71,7 +73,7 @@ Turborepo monorepo with two React Router 7 apps sharing packages.
 - `@repo/database` — Prisma client + PostgreSQL schema. Exports singleton `PrismaClient`. The `build` script runs `prisma generate`, which Turbo runs before app builds via `dependsOn: ["^build"]`.
 - `@repo/auth` — Better Auth wrapper shared by both apps. Subpath exports: `./server` (server instance), `./client` (browser client), `./context` (request user context), `./middleware` (`requireAuth` used by protected layouts). Peer-depends on `@repo/database`.
 - `@repo/ui` — Component library (~52 components) using Base UI primitives, CVA variants, and OKLCH design tokens (primary, secondary, accent, neutral, muted, danger, surface). Exports raw `.tsx` files (no build step). Components are exported individually via package.json `exports` (e.g., `"./button": "./components/Button/index.ts"`). Also exports `theme.css` with token definitions and dark mode support. Note: many components are exported but unused by the apps; `index.ts` only re-exports a couple, so import by subpath (`@repo/ui/button`).
-- `@repo/utils` — Small shared helpers. Subpaths: `./` (re-exports `tiny-invariant`), `./icons` (re-exports `lucide-react`), `./date` (date formatting).
+- `@repo/utils` — Small shared helpers. Subpaths: `./` (re-exports `tiny-invariant`), `./icons` (re-exports `lucide-react`), `./date` (date formatting), `./brand` (the `BRAND_NAME` placeholder-branding constant — see [Rebranding / placeholder content](./README.md#rebranding--placeholder-content) in the README).
 - `@repo/ui-mcp` — Standalone MCP **server binary** (`ui-mcp-server`) that exposes the `@repo/ui` design system to AI assistants (component/variant lookup, token values, design-rule validation). NOT an app dependency — nothing imports it.
 - `@repo/validation` — Placeholder. No subpath exports declared yet (previously advertised `./vehicle`, `./appointment`, `./repair` pointing at nonexistent files); not imported anywhere. Add exports back once real schema files exist.
 - `@repo/typescript-config` — Shared tsconfig presets (`base.json`, `vite.json`)
@@ -92,6 +94,7 @@ Both apps use Better Auth via `@repo/auth`:
 - Routes `sign-in`, `sign-up`, `sign-out`, and the catch-all `api/auth/*` handler wire the flow; they are identical across portal and admin.
 - Protected sections live under `protected-layout.tsx`, which calls `requireAuth` from `@repo/auth/middleware`. Auth checks gate access only — they do not check role.
 - Server-side user access goes through `@repo/auth/context`; never import the Prisma client directly in routes.
+- `cli user:delete` performs a hard delete (cascading to `Session`/`Account`) rather than a soft delete. This is intentional: `User`, `Session`, and `Account` are Better-Auth-managed tables, and Better Auth's own queries (sign-in, session lookup) don't know about a `deletedAt` column, so a soft-deleted user would still be able to authenticate unless Better Auth's queries were also patched to filter it — a larger change than the CLI command warrants. If soft delete becomes a real requirement, it needs to be implemented at the Better Auth integration layer, not just the schema.
 
 ## Database Connection
 

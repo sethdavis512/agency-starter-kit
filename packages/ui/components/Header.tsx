@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { cva, type VariantProps } from "cva";
 import { UserIcon, Menu } from "@repo/utils/icons";
+import { BRAND_NAME } from "@repo/utils/brand";
 import { cn } from "../utils/cn";
 import { Container } from "./Container";
 
@@ -42,7 +43,7 @@ export function Header({
             </button>
           )}
           <Link to="/">
-            <p className="text-xl font-bold">🐔 Stealthy Chicken</p>
+            <p className="text-xl font-bold">🐔 {BRAND_NAME}</p>
           </Link>
         </div>
         <div className="flex">

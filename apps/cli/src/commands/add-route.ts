@@ -22,6 +22,7 @@ export function generateRouteFileContent({
 
   imports.push(`import type { Route } from './+types/${routeName}';`);
   imports.push(`import { PageHeader } from '@repo/ui/page-header';`);
+  imports.push(`import { BRAND_NAME } from '@repo/utils/brand';`);
 
   if (needsLoader) {
     const loaderBody = isProtected
@@ -49,8 +50,7 @@ ${loaderBody}
       .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
       .join("") + "Route";
 
-  const titleSuffix =
-    app === "admin" ? "Stealthy Chicken Admin" : "Stealthy Chicken";
+  const titleSuffix = app === "admin" ? "{BRAND_NAME} Admin" : "{BRAND_NAME}";
   const pageTitle = routeName
     .split("-")
     .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
@@ -131,41 +131,79 @@ export function registerAddRoute(program: Command) {
   program
     .command("add:route")
     .description("Scaffold a new route in an app")
-    .action(async () => {
-      const app = await select({
-        message: "Which app?",
-        choices: [
-          { name: "portal", value: "portal" },
-          { name: "admin", value: "admin" },
-        ],
-      });
+    .option("--app <app>", "which app (portal, admin)")
+    .option("--name <name>", "route name (kebab-case, e.g. settings)")
+    .option("--path <path>", "URL path (defaults to --name)")
+    .option("--loader", "add a loader")
+    .option("--no-loader", "skip the loader")
+    .option("--action", "add an action")
+    .option("--no-action", "skip the action")
+    .option("--protected", "require auth")
+    .option("--no-protected", "make the route public")
+    .action(async (options) => {
+      if (options.app && options.app !== "portal" && options.app !== "admin") {
+        console.error(`Invalid app "${options.app}". Must be portal or admin.`);
+        process.exit(1);
+      }
 
-      const routeName = await input({
-        message: "Route name (kebab-case, e.g. settings):",
-        validate: (v) =>
-          /^[a-z][a-z0-9-]*$/.test(v) ||
-          "Use lowercase kebab-case (e.g. settings)",
-      });
+      const app =
+        options.app ??
+        (await select({
+          message: "Which app?",
+          choices: [
+            { name: "portal", value: "portal" },
+            { name: "admin", value: "admin" },
+          ],
+        }));
 
-      const urlPath = await input({
-        message: "URL path:",
-        default: routeName,
-      });
+      if (options.name && !/^[a-z][a-z0-9-]*$/.test(options.name)) {
+        console.error(
+          `Invalid route name "${options.name}". Use lowercase kebab-case (e.g. settings).`,
+        );
+        process.exit(1);
+      }
 
-      const needsLoader = await confirm({
-        message: "Add a loader?",
-        default: true,
-      });
+      const routeName =
+        options.name ??
+        (await input({
+          message: "Route name (kebab-case, e.g. settings):",
+          validate: (v) =>
+            /^[a-z][a-z0-9-]*$/.test(v) ||
+            "Use lowercase kebab-case (e.g. settings)",
+        }));
 
-      const needsAction = await confirm({
-        message: "Add an action?",
-        default: false,
-      });
+      const urlPath =
+        options.path ??
+        (options.name
+          ? routeName
+          : await input({
+              message: "URL path:",
+              default: routeName,
+            }));
 
-      const isProtected = await confirm({
-        message: "Protected (requires auth)?",
-        default: true,
-      });
+      const needsLoader =
+        options.loader !== undefined
+          ? options.loader
+          : await confirm({
+              message: "Add a loader?",
+              default: true,
+            });
+
+      const needsAction =
+        options.action !== undefined
+          ? options.action
+          : await confirm({
+              message: "Add an action?",
+              default: false,
+            });
+
+      const isProtected =
+        options.protected !== undefined
+          ? options.protected
+          : await confirm({
+              message: "Protected (requires auth)?",
+              default: true,
+            });
 
       const fileContent = generateRouteFileContent({
         app,

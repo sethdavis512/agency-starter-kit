@@ -7,7 +7,8 @@ export function registerUserDelete(program: Command) {
     .command("user:delete")
     .description("Delete a user")
     .argument("[email]", "user email")
-    .action(async (emailArg) => {
+    .option("--yes", "skip the confirmation prompt")
+    .action(async (emailArg, options) => {
       const email =
         emailArg ??
         (await input({
@@ -25,16 +26,21 @@ export function registerUserDelete(program: Command) {
         process.exit(1);
       }
 
-      const yes = await confirm({
-        message: `Delete ${user.name} (${user.email}, ${user.role})?`,
-        default: false,
-      });
+      const yes =
+        options.yes ??
+        (await confirm({
+          message: `Delete ${user.name} (${user.email}, ${user.role})?`,
+          default: false,
+        }));
 
       if (!yes) {
         console.log("Cancelled.");
         return;
       }
 
+      // Hard delete is intentional here: User/Session/Account are Better-Auth-managed,
+      // and a `deletedAt` soft delete wouldn't be honored by Better Auth's own auth
+      // queries without also patching that layer. See CLAUDE.md "Authentication".
       await prisma.user.delete({ where: { id: user.id } });
       console.log(`Deleted user ${email}.`);
     });
