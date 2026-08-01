@@ -1,9 +1,5 @@
-import { PrismaClient } from "../generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
 import { auth } from "@repo/auth/server";
-
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-const prisma = new PrismaClient({ adapter });
+import { prisma } from "../src";
 
 const DEFAULT_PASSWORD = "asdfasdf";
 
@@ -60,6 +56,6 @@ seed()
     console.error(error);
     process.exit(1);
   })
-  .finally(() => {
-    prisma.$disconnect();
+  .finally(async () => {
+    await prisma.$disconnect();
   });
