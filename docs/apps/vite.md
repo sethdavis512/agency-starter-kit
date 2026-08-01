@@ -50,8 +50,8 @@ below.
     "test:watch": "vitest"
   },
   "dependencies": {
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "serve": "^14.2.4"
   },
   "devDependencies": {
@@ -71,7 +71,7 @@ below.
 
 Notes:
 
-- Pin React to 19.2.4 to match `portal` and `admin`.
+- Pin React to 19.2.7 to match `portal` and `admin`.
 - `serve` is the `start` entrypoint for Railway. Vite's own `preview`
   command is dev-only and should not run in production.
 - Port 5560 is a suggestion. Pick something outside the 551x/552x range

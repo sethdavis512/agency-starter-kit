@@ -5,7 +5,8 @@
     "exports": {
         ".": "./index.ts",
         "./icons": "./icons.ts",
-        "./date": "./date.ts"
+        "./date": "./date.ts",
+        "./brand": "./brand.ts"
     },
     "license": "MIT",
     "scripts": {

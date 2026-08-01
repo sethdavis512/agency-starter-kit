@@ -84,8 +84,8 @@ apps/docs/
     "@mdx-js/react": "^3.0.0",
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.4.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.9.0",
@@ -102,7 +102,7 @@ apps/docs/
 Notes:
 
 - Docusaurus 3.7+ officially supports React 19 in its peer
-  dependencies, so you can pin React to 19.2.4 to match `portal` and
+  dependencies, so you can pin React to 19.2.7 to match `portal` and
   `admin`.
 - `dev` is aliased to `docusaurus start` so Turbo's `dev` task is
   consistent across all apps.
@@ -250,12 +250,12 @@ verify the docs render.
   ```json
   {
     "overrides": {
-      "react": "19.2.4",
-      "react-dom": "19.2.4"
+      "react": "19.2.7",
+      "react-dom": "19.2.7"
     },
     "resolutions": {
-      "react": "19.2.4",
-      "react-dom": "19.2.4"
+      "react": "19.2.7",
+      "react-dom": "19.2.7"
     }
   }
   ```
