@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Link, NavLink, type NavLinkRenderProps } from "react-router";
 import { LayoutDashboard, User, LogOut, X } from "@repo/utils/icons";
 import { BRAND_NAME } from "@repo/utils/brand";
@@ -44,47 +45,105 @@ function NavItem({
   );
 }
 
+const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled])';
+
 export function Sidebar({
   className,
   variant = "portal",
   isOpen,
   onClose,
 }: SidebarProps) {
-  const sidebarContent = (
-    <div className="flex flex-col">
-      {/* Logo - mobile only */}
-      <div className="flex items-center justify-between px-4 py-4 lg:hidden">
-        <Link to="/" onClick={onClose}>
-          <p className="text-xl font-bold">🐔 {BRAND_NAME}</p>
-        </Link>
-        <button
-          onClick={onClose}
-          className="rounded-md p-1 text-neutral/50 hover:bg-muted"
-        >
-          <X className="h-5 w-5" />
-        </button>
-      </div>
+  const drawerRef = useRef<HTMLElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
-        <NavItem to="/dashboard" icon={LayoutDashboard} end variant={variant}>
-          Dashboard
-        </NavItem>
-        <NavItem to="/profile" icon={User} variant={variant}>
-          Profile
-        </NavItem>
-      </nav>
+  useEffect(() => {
+    if (!isOpen) return;
 
-      <div className="border-t border-neutral/15 px-3 py-4">
-        <NavLink
-          to="/sign-out"
-          className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-neutral transition-colors hover:bg-muted"
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus();
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        onClose();
+        return;
+      }
+
+      if (event.key !== "Tab" || !drawerRef.current) return;
+
+      const focusable = Array.from(
+        drawerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previouslyFocusedRef.current?.focus();
+    };
+  }, [isOpen, onClose]);
+
+  function renderSidebarContent({ isMobile }: { isMobile: boolean }) {
+    return (
+      <div className="flex flex-col">
+        {/* Logo - mobile only */}
+        {isMobile && (
+          <div className="flex items-center justify-between px-4 py-4">
+            <Link to="/" onClick={onClose}>
+              <p className="text-xl font-bold">🐔 {BRAND_NAME}</p>
+            </Link>
+            <button
+              ref={closeButtonRef}
+              onClick={onClose}
+              aria-label="Close navigation menu"
+              className="rounded-md p-1 text-neutral/50 hover:bg-muted"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        )}
+
+        <nav
+          aria-label="Main navigation"
+          className="flex-1 space-y-1 px-3 py-4"
         >
-          <LogOut className="h-4 w-4 shrink-0" />
-          Sign Out
-        </NavLink>
+          <NavItem
+            to="/dashboard"
+            icon={LayoutDashboard}
+            end
+            variant={variant}
+          >
+            Dashboard
+          </NavItem>
+          <NavItem to="/profile" icon={User} variant={variant}>
+            Profile
+          </NavItem>
+        </nav>
+
+        <div className="border-t border-neutral/15 px-3 py-4">
+          <NavLink
+            to="/sign-out"
+            className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-neutral transition-colors hover:bg-muted"
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            Sign Out
+          </NavLink>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 
   return (
     <>
@@ -97,12 +156,17 @@ export function Sidebar({
       )}
       {/* Mobile sidebar */}
       <aside
+        ref={drawerRef}
+        role="dialog"
+        aria-modal={isOpen}
+        aria-label="Navigation menu"
+        inert={!isOpen}
         className={cn(
           "fixed inset-y-0 left-0 z-50 w-64 bg-surface shadow-lg transition-transform duration-200 lg:hidden",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        {sidebarContent}
+        {renderSidebarContent({ isMobile: true })}
       </aside>
       {/* Desktop sidebar */}
       <aside
@@ -111,7 +175,7 @@ export function Sidebar({
           className,
         )}
       >
-        {sidebarContent}
+        {renderSidebarContent({ isMobile: false })}
       </aside>
     </>
   );
