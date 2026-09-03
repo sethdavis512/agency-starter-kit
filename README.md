@@ -25,11 +25,36 @@ cp packages/database/.env.example packages/database/.env
 cp apps/portal/.env.example apps/portal/.env
 cp apps/admin/.env.example apps/admin/.env
 
-bun run cli db:setup   # generate Prisma client + push schema + seed
+bun run cli db:setup   # generate Prisma client + apply migrations + seed demo users
 bun run dev
 ```
 
 Docker is optional — if you already have a `DATABASE_URL`, skip `db:up` and just set it in the three `.env` files. Stop the local database with `bun run db:down` (data persists in a named volume).
+
+Schema changes live in `packages/database/prisma/migrations/`. After editing
+`schema.prisma`, run `bun run cli db:setup` again (or `bunx prisma migrate dev`
+from `packages/database/`) to create and apply a new migration. `db:setup` only
+seeds the demo users automatically when `DATABASE_URL` points at `localhost`;
+against any other host it skips the seed unless you pass `--seed` and set
+`SEED_PASSWORD`.
+
+## Deploying
+
+The apps are built for Railway (see [CLAUDE.md](./CLAUDE.md#deployment) for
+the service layout), but the database release step is the same anywhere:
+apply pending migrations **before** starting the new app version.
+
+```sh
+bun run cli db:migrate   # prisma migrate deploy — applies pending migrations, never seeds
+```
+
+`db:migrate` reads `DATABASE_URL` from the environment (on Railway, set it on
+the service and use the command as the release/pre-deploy step). It is
+idempotent — running it against an up-to-date database is a no-op that exits
+0 — and it never runs the demo seed, so it is safe to wire into CI and every
+deploy. Do not use `db:setup` or `prisma db push` against a production
+database: `db:setup` runs `migrate dev`, which can reset a database it finds
+out of sync, and `db push` leaves no migration history behind.
 
 ## Rebranding / placeholder content
 

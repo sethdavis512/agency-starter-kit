@@ -22,8 +22,10 @@ export function registerDbSeed(program: Command) {
           return;
         }
 
-        console.log("Resetting database...");
-        await $`bunx prisma db push --force-reset`.cwd("packages/database");
+        console.log("Resetting database (prisma migrate reset)...");
+        await $`bunx prisma migrate reset --force --skip-seed`.cwd(
+          "packages/database",
+        );
         console.log("Database reset.");
       }
 

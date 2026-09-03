@@ -1,16 +1,6 @@
 import { auth } from "@repo/auth/server";
 import { prisma } from "../src";
-
-const LOCAL_DB_HOSTS = new Set(["localhost", "127.0.0.1"]);
-
-function isLocalDatabase(databaseUrl: string | undefined) {
-  if (!databaseUrl) return false;
-  try {
-    return LOCAL_DB_HOSTS.has(new URL(databaseUrl).hostname);
-  } catch {
-    return false;
-  }
-}
+import { isLocalDatabase } from "../src/database-url";
 
 function resolveSeedPassword() {
   if (process.env.SEED_PASSWORD) {
