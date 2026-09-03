@@ -52,10 +52,12 @@ export const auth = betterAuth({
   emailVerification: {
     // Sent on sign-up only when verification is required (Better Auth's
     // `sendOnSignUp` defaults to `requireEmailVerification`), and re-sent on
-    // any sign-in attempt from an unverified account.
+    // any sign-in attempt from an unverified account (`sendOnSignIn`, which
+    // is a no-op while verification is off because sign-in never rejects).
     sendVerificationEmail: async ({ user, url }) => {
       await email.send(emailVerificationEmail({ to: user.email, url }));
     },
+    sendOnSignIn: true,
     autoSignInAfterVerification: true,
   },
   user: {
