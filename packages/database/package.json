@@ -4,6 +4,7 @@
     "type": "module",
     "exports": {
         ".": "./src/index.ts",
+        "./database-url": "./src/database-url.ts",
         "./models/user.server": "./models/user.server.ts"
     },
     "scripts": {
@@ -11,6 +12,7 @@
         "db:generate": "prisma generate",
         "db:push": "prisma db push",
         "db:migrate": "prisma migrate dev",
+        "db:migrate:deploy": "prisma migrate deploy",
         "db:seed": "prisma db seed",
         "db:studio": "prisma studio",
         "lint": "eslint \"**/*.ts\"",

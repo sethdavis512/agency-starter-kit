@@ -2,6 +2,7 @@ import { program } from "commander";
 import { registerDbStatus } from "./commands/db-status";
 import { registerDbInfo } from "./commands/db-info";
 import { registerDbSetup } from "./commands/db-setup";
+import { registerDbMigrate } from "./commands/db-migrate";
 import { registerDbSeed } from "./commands/db-seed";
 import { registerCheckEnv } from "./commands/check-env";
 import { registerUserList } from "./commands/user-list";
@@ -24,6 +25,7 @@ program.name("cli").description("Agency Starter Kit CLI").version("0.0.1");
 registerDbStatus(program);
 registerDbInfo(program);
 registerDbSetup(program);
+registerDbMigrate(program);
 registerDbSeed(program);
 registerCheckEnv(program);
 

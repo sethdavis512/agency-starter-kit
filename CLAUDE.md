@@ -21,7 +21,8 @@ bun run e2e:report       # Open combined Playwright report
 # Optional: PLAYWRIGHT_REUSE_SERVER=1 bun run e2e
 # e2e global setup runs `prisma db push` (non-destructive) against DATABASE_URL by default.
 # Set E2E_DB_RESET=1 to force-reset (drop + recreate all tables) before seeding — CI sets this;
-# do NOT set it locally against a shared/dev/staging database.
+# do NOT set it locally against a shared/dev/staging database. (db push is fine here because the
+# e2e DB is throwaway; every other schema path goes through prisma/migrations — see below.)
 bun run format           # Prettier format all files
 
 # Unit tests (Vitest)
@@ -40,17 +41,20 @@ bun run typecheck --filter=portal
 
 # CLI (run from repo root)
 bun run cli --help       # Show all commands
-bun run cli db:setup     # Generate + push + seed
+bun run cli db:setup     # Generate + migrate dev + seed (seed only auto-runs on a local DATABASE_URL; --seed + SEED_PASSWORD otherwise)
+bun run cli db:migrate   # prisma migrate deploy — release step for CI/Railway, never seeds
+bun run cli db:seed      # Run the seed (--reset = prisma migrate reset first)
 bun run cli db:status    # Check DB connectivity
 bun run cli user:list    # List users
 bun run cli add:route    # Scaffold a new route
 bun run cli deploy       # Deploy to Railway
 
 # Database (run from packages/database/)
-bunx prisma generate      # Generate Prisma client (also runs as part of turbo build)
-bunx prisma db push       # Push schema to database
-bunx prisma migrate dev   # Create migration
-bunx prisma studio        # Visual database browser
+bunx prisma generate         # Generate Prisma client (also runs as part of turbo build)
+bunx prisma migrate dev      # Create + apply a migration after editing schema.prisma (local only)
+bunx prisma migrate deploy   # Apply pending migrations (what `cli db:migrate` runs)
+bunx prisma studio           # Visual database browser
+# `prisma db push` is reserved for the throwaway e2e database — it records no migration history.
 
 # Turbo filtered builds
 bunx turbo run build --filter=portal
@@ -70,7 +74,7 @@ Turborepo monorepo with two React Router 7 apps sharing packages.
 
 **Packages** (`packages/`):
 
-- `@repo/database` — Prisma client + PostgreSQL schema. Exports singleton `PrismaClient`. The `build` script runs `prisma generate`, which Turbo runs before app builds via `dependsOn: ["^build"]`.
+- `@repo/database` — Prisma client + PostgreSQL schema. Exports singleton `PrismaClient`. The `build` script runs `prisma generate`, which Turbo runs before app builds via `dependsOn: ["^build"]`. Schema history lives in `prisma/migrations/` (baseline: `20260903015304_init`); every schema change needs a new migration via `prisma migrate dev`. Subpath `./database-url` exports `isLocalDatabase`, which does not touch the generated client and is shared by `prisma/seed.ts` and the CLI seed gate.
 - `@repo/auth` — Better Auth wrapper shared by both apps. Subpath exports: `./server` (server instance), `./client` (browser client), `./context` (request user context), `./middleware` (`requireAuth` used by protected layouts). Peer-depends on `@repo/database`.
 - `@repo/ui` — Component library (~52 components) using Base UI primitives, CVA variants, and OKLCH design tokens (primary, secondary, accent, neutral, muted, danger, surface). Exports raw `.tsx` files (no build step). Components are exported individually via package.json `exports` (e.g., `"./button": "./components/Button/index.ts"`). Also exports `theme.css` with token definitions and dark mode support. Note: many components are exported but unused by the apps; `index.ts` only re-exports a couple, so import by subpath (`@repo/ui/button`).
 - `@repo/utils` — Small shared helpers. Subpaths: `./` (re-exports `tiny-invariant`), `./icons` (re-exports `lucide-react`), `./date` (date formatting), `./brand` (the `BRAND_NAME` placeholder-branding constant — see [Rebranding / placeholder content](./README.md#rebranding--placeholder-content) in the README).
@@ -103,7 +107,7 @@ The apps and the Prisma CLI read **`DATABASE_URL`** and nothing else (`packages/
 
 `DATABASE_URL` must be set in three `.env` files (mirrored by the committed `.env.example` files):
 
-- `packages/database/.env` — used by the Prisma CLI (generate / db push / migrate / seed)
+- `packages/database/.env` — used by the Prisma CLI (generate / migrate / seed)
 - `apps/portal/.env` and `apps/admin/.env` — used at app runtime
 
 A root **`docker-compose.yml`** provides an optional local Postgres (`postgres:17-alpine`, port 5432, named volume) for development. It is purely a convenience: nothing in the build or `dev` flow depends on Docker, and the apps run against any `DATABASE_URL` (Railway, Neon, locally-installed Postgres). Typical first-run setup:
@@ -111,9 +115,11 @@ A root **`docker-compose.yml`** provides an optional local Postgres (`postgres:1
 ```bash
 bun run db:up           # start local Postgres
 # copy each .env.example to .env (defaults match the compose file)
-bun run cli db:setup    # generate + push + seed
+bun run cli db:setup    # generate + migrate dev + seed
 bun run dev
 ```
+
+`db:setup` uses `prisma migrate dev` (never `db push`) and only seeds automatically when `DATABASE_URL` is a local host. Against a non-local host it skips the seed unless `--seed` is passed **and** `SEED_PASSWORD` is set; `--seed` without `SEED_PASSWORD` exits 1. The gating decision is `decideSeed` in `apps/cli/src/lib/seed-gate.ts` (unit tested).
 
 ## Tailwind v4 Monorepo Setup
 
@@ -135,6 +141,8 @@ Deployed to Railway. Each app has its own Railway service with watch paths confi
 - `admin` watches: `apps/admin/**`, `packages/**`
 
 Railway build command: `bun install --production=false && turbo run build --filter=<app>`
+
+Database release step: run `bun run cli db:migrate` (`prisma migrate deploy`) with `DATABASE_URL` set before the new app version starts. It applies pending migrations from `packages/database/prisma/migrations/`, is a no-op on an up-to-date database, and never seeds. Never run `db:setup` or `prisma db push` against a production database.
 
 <!-- SPECKIT START -->
 
