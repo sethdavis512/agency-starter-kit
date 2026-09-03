@@ -8,6 +8,18 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import { AppLink } from "@repo/ui/app-link";
+import { Button } from "@repo/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@repo/ui/card";
+import { Container } from "@repo/ui/container";
+import { BRAND_NAME } from "@repo/utils/brand";
+import { useNonce } from "@repo/utils/nonce";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -24,6 +36,10 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  // Set by entry.server.tsx; matches the `nonce-…` in the CSP header so the
+  // inline scripts below are allowed to run.
+  const nonce = useNonce();
+
   return (
     <html lang="en" className="h-screen">
       <head>
@@ -34,8 +50,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="h-full">
         {children}
-        <ScrollRestoration />
-        <Scripts />
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );
@@ -45,31 +61,51 @@ export default function App() {
   return <Outlet />;
 }
 
+/**
+ * Last-resort boundary. Root-level error boundaries render outside the site
+ * layout, so this page carries its own container and a way back home. Stack
+ * traces are dev-only; production users only ever see the generic copy while
+ * the real error is logged by `handleError` in entry.server.tsx.
+ */
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
-  let details = "An unexpected error occurred.";
+  let title = "Something went wrong";
+  let details = "An unexpected error occurred. Please try again.";
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    title = error.status === 404 ? "404" : `Error ${error.status}`;
     details =
       error.status === 404
         ? "The requested page could not be found."
         : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
+  } else if (import.meta.env.DEV && error instanceof Error) {
     details = error.message;
     stack = error.stack;
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )}
-    </main>
+    <>
+      <title>{`${title} | ${BRAND_NAME}`}</title>
+      <Container className="flex min-h-screen items-center justify-center py-8">
+        <Card className={stack ? "w-full max-w-3xl" : "w-full max-w-md"}>
+          <CardHeader>
+            <CardTitle>{title}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm text-neutral/60">
+            <p>{details}</p>
+            {stack && (
+              <pre className="overflow-x-auto rounded bg-muted p-4 text-xs text-neutral">
+                <code>{stack}</code>
+              </pre>
+            )}
+          </CardContent>
+          <CardFooter>
+            <AppLink to="/">
+              <Button variant="primary">Back to home</Button>
+            </AppLink>
+          </CardFooter>
+        </Card>
+      </Container>
+    </>
   );
 }
