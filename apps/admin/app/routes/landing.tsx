@@ -19,17 +19,12 @@ export default function Landing() {
       <div className="flex flex-1 flex-col items-center justify-center py-24 text-center">
         <h1 className="text-5xl font-bold tracking-tight">🐔 {BRAND_NAME}</h1>
         <p className="mt-4 max-w-md text-lg text-zinc-600">
-          Admin portal. Sign in to manage your operations.
+          Admin portal. Sign in with an admin account to manage your operations.
         </p>
         <div className="mt-8 flex gap-4">
           <AppLink to="/sign-in">
             <Button size="lg" variant="primary">
               Sign In
-            </Button>
-          </AppLink>
-          <AppLink to="/sign-up">
-            <Button size="lg" variant="secondary">
-              Sign Up
             </Button>
           </AppLink>
         </div>

@@ -5,6 +5,8 @@ import {
   route,
 } from "@react-router/dev/routes";
 
+// No public sign-up on the admin app: admin accounts are created with
+// `bun run cli user:create --role admin`.
 export default [
   route("api/auth/*", "./routes/api-auth.tsx"),
   route("health", "./routes/health.tsx"),
@@ -15,7 +17,6 @@ export default [
       route("profile", "./routes/profile.tsx"),
     ]),
     route("sign-in", "./routes/sign-in.tsx"),
-    route("sign-up", "./routes/sign-up.tsx"),
     route("sign-out", "./routes/sign-out.tsx"),
   ]),
 ] satisfies RouteConfig;

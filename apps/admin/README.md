@@ -4,12 +4,12 @@ Internal admin console in the agency-starter-kit monorepo. Built with
 [React Router 7](https://reactrouter.com/) (framework mode, SSR enabled) +
 Vite + Tailwind CSS v4.
 
-`admin` and `portal` are a near-identical scaffold pair: same routes, same
-auth flow, same shared `@repo/*` packages — they differ only by dev port and
-a UI `variant` prop used for branding. There is no role-based access control
-yet; `admin` is not gated to admin users. The only role-aware UI is the
-admin profile page showing `user.role`. Treat the duplication as template
-scaffolding, not a divergent product.
+`admin` and `portal` are a near-identical scaffold pair: same auth flow, same
+shared `@repo/*` packages — they differ by dev port, a UI `variant` prop used
+for branding, and access control. `admin` is gated to admin users: protected
+routes chain `requireAuth` and `requireAdmin`, non-admin accounts get a 403
+page, and there is no public sign-up. Treat the remaining duplication as
+template scaffolding, not a divergent product.
 
 ## Getting Started
 
@@ -47,9 +47,18 @@ template default of 5173 — see `vite.config.ts`).
 ### Authentication
 
 Auth is handled by the shared `@repo/auth` package (Better Auth). Routes
-`sign-in`, `sign-up`, `sign-out`, and `api/auth/*` wire the flow. Protected
-routes live under `protected-layout.tsx`, which calls `requireAuth` — this
-gates access only, it does not check role.
+`sign-in`, `sign-out`, and `api/auth/*` wire the flow. Protected routes live
+under `protected-layout.tsx`, which calls `requireAuth` (redirects anonymous
+visitors to `/sign-in`) and then `requireAdmin` (throws a 403 for signed-in
+users without the `admin` role; `root.tsx` renders it as a "You need an admin
+account" page with a sign-out link).
+
+There is no `sign-up` route on the admin app. Create admin users from the
+repo root:
+
+```bash
+bun run cli user:create --role admin
+```
 
 ## Building for Production
 
