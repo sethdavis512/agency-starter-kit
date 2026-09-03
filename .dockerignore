@@ -1,0 +1,21 @@
+# Build context is the repo root (docker build -f apps/<app>/Dockerfile .).
+# Keep host artifacts out so the image installs and builds from clean source.
+node_modules
+**/node_modules
+**/build
+**/dist
+**/.react-router
+**/.turbo
+packages/database/generated
+.env
+**/.env
+.git
+.agents
+.claude
+.specify
+.vscode
+docs
+playwright-report
+test-results
+coverage
+*.log

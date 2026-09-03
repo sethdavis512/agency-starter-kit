@@ -93,6 +93,36 @@ This Turborepo has some additional tools already setup for you:
 - [Playwright](https://playwright.dev) for end-to-end testing
 - [Vitest](https://vitest.dev) for unit testing
 
+## Deployment
+
+Each app deploys to its own Railway service. Build, start, health-check, and
+restart settings are committed per service in `apps/portal/railway.json` and
+`apps/admin/railway.json` (Railpack builder, `GET /health` as the health-check
+path, restart on failure). `bun run cli railway:setup` creates the project and
+services; then point each service at its file (Service → Settings →
+Config-as-code → `apps/<app>/railway.json`) and deploy with
+`bun run cli deploy`.
+
+Two environment requirements beyond the usual runtime variables:
+
+- **`DATABASE_URL` is needed at build time.** `turbo run build` runs
+  `prisma generate`, which loads `DATABASE_URL` through
+  `packages/database/prisma.config.ts` and fails when it is unset. Nothing
+  connects during the build, so any well-formed Postgres URL satisfies it,
+  but set the real one on the service before the first deploy — Railway
+  exposes service variables to the build.
+- **`/health` must return 200.** Both apps expose `GET /health`, a
+  loader-only resource route that runs `SELECT 1` through `@repo/database`
+  and returns `{ "status": "ok" }` (200) or `{ "status": "error" }` (503).
+  Railway only routes traffic to a deploy once it passes.
+
+`apps/<app>/Dockerfile` is an equivalent multi-stage image for other hosts or
+for checking the production build locally, built from the repo root:
+
+```sh
+docker build -f apps/portal/Dockerfile --build-arg DATABASE_URL=postgresql://... .
+```
+
 ## Where to go next
 
 - [CLAUDE.md](./CLAUDE.md) — commands, architecture, and conventions for

@@ -1,22 +1,37 @@
-FROM oven/bun:1-alpine AS development-dependencies-env
-COPY . /app
+# Monorepo image for the `portal` app.
+# Build from the REPO ROOT so every workspace package is in the context:
+#
+#   docker build -f apps/portal/Dockerfile --build-arg DATABASE_URL=postgresql://... .
+#
+# The Debian-based `oven/bun:1` image (not alpine) matches Prisma's default
+# engine target (debian-openssl-3.0.x), so `prisma generate` works untouched.
+
+FROM oven/bun:1 AS build
 WORKDIR /app
+
+# Copy the whole workspace (root .dockerignore keeps node_modules, build
+# output, and .env files out) so bun can link every @repo/* package.
+COPY . .
 RUN bun install --frozen-lockfile
 
-FROM oven/bun:1-alpine AS production-dependencies-env
-COPY ./package.json bun.lock /app/
+# `turbo run build` runs @repo/database's `prisma generate` first, which loads
+# DATABASE_URL through prisma.config.ts and fails when it is unset. Nothing
+# connects to the database during the build, so any well-formed Postgres URL
+# works here; pass the real one with --build-arg to keep parity with runtime.
+ARG DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+ENV DATABASE_URL=$DATABASE_URL
+RUN bunx turbo run build --filter=portal
+
+FROM oven/bun:1 AS runtime
 WORKDIR /app
+ENV NODE_ENV=production
+
+# Ship the built workspace (apps/portal/build, packages/database/generated,
+# workspace symlinks) and drop devDependencies now that the build exists.
+COPY --from=build /app /app
 RUN bun install --frozen-lockfile --production
 
-FROM oven/bun:1-alpine AS build-env
-COPY . /app/
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
-WORKDIR /app
-RUN bun run build
-
-FROM oven/bun:1-alpine
-COPY ./package.json bun.lock /app/
-COPY --from=production-dependencies-env /app/node_modules /app/node_modules
-COPY --from=build-env /app/build /app/build
-WORKDIR /app
+# react-router-serve binds 0.0.0.0 and reads PORT (Railway injects it).
+WORKDIR /app/apps/portal
+EXPOSE 3000
 CMD ["bun", "run", "start"]

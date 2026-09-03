@@ -95,6 +95,7 @@ Both apps use Better Auth via `@repo/auth`:
 - `site-layout.tsx` (the outermost layout) runs `populateSession` middleware, which fetches the session once per request and stores it in `userContext`. Every descendant loader — `landing`, `sign-in`, `sign-up`, and everything under `protected-layout` — reads the user via `context.get(userContext)` instead of calling `auth.api.getSession` again.
 - Protected sections live under `protected-layout.tsx`, which calls `requireAuth` from `@repo/auth/middleware`. `requireAuth` only reads the context `populateSession` already populated and redirects to `/sign-in` if empty — it does not fetch the session itself. Auth checks gate access only — they do not check role.
 - Server-side user access goes through `@repo/auth/context`; never import the Prisma client directly in routes.
+- `health` (`GET /health`) is a loader-only resource route registered outside `site-layout` in `routes.ts`, so `populateSession` never runs for it. It is the one documented exception to the rule above: it runs `SELECT 1` through `@repo/database` and returns 200 `{ status: "ok" }` or 503 `{ status: "error" }` for Railway's health check.
 - `cli user:delete` performs a hard delete (cascading to `Session`/`Account`) rather than a soft delete. This is intentional: `User`, `Session`, and `Account` are Better-Auth-managed tables, and Better Auth's own queries (sign-in, session lookup) don't know about a `deletedAt` column, so a soft-deleted user would still be able to authenticate unless Better Auth's queries were also patched to filter it — a larger change than the CLI command warrants. If soft delete becomes a real requirement, it needs to be implemented at the Better Auth integration layer, not just the schema.
 
 ## Database Connection
@@ -129,12 +130,14 @@ The `@source` directive tells Tailwind v4 to scan the UI package for classes. Th
 
 ## Deployment
 
-Deployed to Railway. Each app has its own Railway service with watch paths configured:
+Deployed to Railway, one service per app, built by Railpack (Railway's default builder, which ignores `NIXPACKS_*` variables). Each service's config is committed in `apps/<app>/railway.json`; the services have no root directory, so each one must be pointed at its file via Service → Settings → Config-as-code:
 
-- `portal` watches: `apps/portal/**`, `packages/**`
-- `admin` watches: `apps/admin/**`, `packages/**`
+- `build.buildCommand`: `bun install --production=false && bunx turbo run build --filter=<app>`
+- `deploy.startCommand`: `cd apps/<app> && bun run start`
+- `deploy.healthcheckPath`: `/health` (see the `health` route below); `restartPolicyType`: `ON_FAILURE`
+- `build.watchPatterns`: `apps/<app>/**`, `packages/**`
 
-Railway build command: `bun install --production=false && turbo run build --filter=<app>`
+`DATABASE_URL` is required at **build** time as well as runtime: `turbo run build` runs `prisma generate`, which loads it via `prisma.config.ts` and fails when unset. Any well-formed Postgres URL satisfies the build (nothing connects), so set the real value on the service before the first deploy. `apps/<app>/Dockerfile` is an equivalent multi-stage image built from the repo root (`docker build -f apps/portal/Dockerfile --build-arg DATABASE_URL=... .`); `cli railway:setup` prints these requirements as its next steps and `cli status` probes each service's `/health`.
 
 <!-- SPECKIT START -->
 
