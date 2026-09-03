@@ -158,24 +158,73 @@ told to transform it:
 
 ### 7. Railway deployment shape
 
-Every app deploys to its own Railway service. The monorepo uses Nixpacks
-with a custom build and start command so the full monorepo is available
-during the build.
+Every app deploys to its own Railway service, built by **Railpack** (Railway's
+default builder). Railpack ignores the older `NIXPACKS_BUILD_CMD` /
+`NIXPACKS_START_CMD` variables, so nothing is configured through variables:
+each service's build, start, health-check, and restart settings are committed
+in `apps/<name>/railway.json`. Copy `apps/portal/railway.json` and change the
+app name:
 
-| Setting              | Value                                                                    |
-| -------------------- | ------------------------------------------------------------------------ |
-| `NIXPACKS_BUILD_CMD` | `bun install --production=false && bunx turbo run build --filter=<name>` |
-| `NIXPACKS_START_CMD` | `bun run start`                                                          |
-| Watch paths          | `apps/<name>/**`, `packages/**`                                          |
+```json
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "RAILPACK",
+    "buildCommand": "bun install --production=false && bunx turbo run build --filter=<name>",
+    "watchPatterns": ["apps/<name>/**", "packages/**"]
+  },
+  "deploy": {
+    "startCommand": "cd apps/<name> && bun run start",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 60,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  }
+}
+```
 
-The `bun run start` command runs against the app workspace, so make sure
-the new app's `package.json` has a working `start` script that binds to
-`0.0.0.0` and reads `process.env.PORT`. Each framework guide shows the
-right shape.
+The services have **no root directory** set (shared packages must stay in the
+build context), so Railway would look for `railway.json` at the repo root.
+Point each service at its own file instead: Service → Settings →
+Config-as-code → `apps/<name>/railway.json`.
+
+| Setting                    | Value                                                                    |
+| -------------------------- | ------------------------------------------------------------------------ |
+| `build.buildCommand`       | `bun install --production=false && bunx turbo run build --filter=<name>` |
+| `deploy.startCommand`      | `cd apps/<name> && bun run start`                                        |
+| `deploy.healthcheckPath`   | `/health`                                                                |
+| `deploy.restartPolicyType` | `ON_FAILURE`                                                             |
+| `build.watchPatterns`      | `apps/<name>/**`, `packages/**`                                          |
+
+Three things the app itself must provide:
+
+- A `start` script that binds to `0.0.0.0` and reads `process.env.PORT`.
+  Each framework guide shows the right shape.
+- A `GET /health` endpoint that returns 200 when the app can reach its
+  dependencies and 503 otherwise. Railway only routes traffic to a deploy
+  once `healthcheckPath` returns 200. The React Router apps implement it as
+  a loader-only resource route (`apps/portal/app/routes/health.tsx`) that
+  runs `SELECT 1` through `@repo/database`; copy it for any app that talks
+  to the database.
+- `DATABASE_URL` available at **build** time. `turbo run build` runs
+  `prisma generate` for `@repo/database`, which loads `DATABASE_URL` via
+  `prisma.config.ts` and fails when it is unset. Nothing connects during
+  the build, so any well-formed Postgres URL works, but set the real one on
+  the Railway service before the first deploy (service variables are
+  exposed to the build) so runtime is covered too.
+
+`apps/portal/Dockerfile` and `apps/admin/Dockerfile` are equivalent
+multi-stage images for hosts that build from a Dockerfile (or to check the
+production build locally). Build them from the repo root:
+
+```bash
+docker build -f apps/<name>/Dockerfile --build-arg DATABASE_URL=postgresql://... .
+```
 
 You can create the service manually with `railway add --service <name>`
-then set the variables above, or extend `apps/cli/src/commands/railway-setup.ts`
-and `deploy.ts` to cover the new app alongside `portal` and `admin`.
+then set the config-as-code path above, or extend
+`apps/cli/src/commands/railway-setup.ts` and `deploy.ts` to cover the new
+app alongside `portal` and `admin`.
 
 ## End-to-end workflow for adding any new app
 
@@ -193,8 +242,9 @@ and `deploy.ts` to cover the new app alongside `portal` and `admin`.
 5. **Wire up tests.** Copy the `vitest.config.ts` pattern from `apps/portal`
    if the framework supports Vitest. Add a Playwright project to
    `playwright.config.ts` if you want browser-level coverage.
-6. **Provision Railway.** Create a service, paste in the build and start
-   commands, add the watch paths, and set any framework-specific env vars.
+6. **Provision Railway.** Create a service, commit `apps/<name>/railway.json`,
+   point the service's config-as-code path at it, and set `DATABASE_URL`
+   (needed at build time) plus any framework-specific env vars.
 7. **Deploy.** `railway up --detach --service <name>` from the repo root.
 
 ## Troubleshooting

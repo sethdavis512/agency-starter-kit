@@ -7,6 +7,7 @@ import {
 
 export default [
   route("api/auth/*", "./routes/api-auth.tsx"),
+  route("health", "./routes/health.tsx"),
   layout("./routes/site-layout.tsx", [
     index("routes/landing.tsx"),
     layout("./routes/protected-layout.tsx", [
