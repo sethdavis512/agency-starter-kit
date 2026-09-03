@@ -65,7 +65,7 @@ Turborepo monorepo with two React Router 7 apps sharing packages.
 
 **Apps** (`apps/`):
 
-- `portal` and `admin` — React Router 7 + Vite + Tailwind v4, SSR enabled, build output in `build/`. These are intentionally a **near-identical scaffold pair**: same routes, same auth flow, same shared components, differing only by dev port (portal 5520, admin 5510) and a UI `variant` prop for branding. There is no role-based access control yet — `admin` is not gated to admin users; the only role-aware UI is the admin profile showing `user.role`. Treat the duplication as template scaffolding, not divergent products.
+- `portal` and `admin` — React Router 7 + Vite + Tailwind v4, SSR enabled, build output in `build/`. These are intentionally a **near-identical scaffold pair**: same routes, same auth flow, same shared components, differing only by dev port (portal 5520, admin 5510) and a UI `variant` prop for branding. Role-based access control is minimal: `admin`'s `protected-layout.tsx` runs `requireAuth` then `requireAdmin`, so only users with `role = admin` reach `/dashboard` and `/profile` (non-admins get the 403 page from `root.tsx`), and `admin` has no public `/sign-up` route — admin accounts are created with `bun run cli user:create --role admin`. `portal` has no role gating. Treat the remaining duplication as template scaffolding, not divergent products.
 - `cli` — Commander.js CLI tool for DB, user, session, and deployment operations. Uses `bun build --compile` to produce a standalone binary. Run with `bun run cli <command>` during dev.
 
 **Packages** (`packages/`):
@@ -91,9 +91,9 @@ Turborepo monorepo with two React Router 7 apps sharing packages.
 
 Both apps use Better Auth via `@repo/auth`:
 
-- Routes `sign-in`, `sign-up`, `sign-out`, and the catch-all `api/auth/*` handler wire the flow; they are identical across portal and admin.
+- Routes `sign-in`, `sign-up`, `sign-out`, and the catch-all `api/auth/*` handler wire the flow. They are identical across portal and admin except that `admin` has no `sign-up` route (registration is closed; use `cli user:create --role admin`).
 - `site-layout.tsx` (the outermost layout) runs `populateSession` middleware, which fetches the session once per request and stores it in `userContext`. Every descendant loader — `landing`, `sign-in`, `sign-up`, and everything under `protected-layout` — reads the user via `context.get(userContext)` instead of calling `auth.api.getSession` again.
-- Protected sections live under `protected-layout.tsx`, which calls `requireAuth` from `@repo/auth/middleware`. `requireAuth` only reads the context `populateSession` already populated and redirects to `/sign-in` if empty — it does not fetch the session itself. Auth checks gate access only — they do not check role.
+- Protected sections live under `protected-layout.tsx`, which calls `requireAuth` from `@repo/auth/middleware`. `requireAuth` only reads the context `populateSession` already populated and redirects to `/sign-in` if empty — it does not fetch the session itself. `admin` additionally chains `requireAdmin`, which throws a 403 `Response` for non-admin users; `portal` gates on authentication only.
 - Server-side user access goes through `@repo/auth/context`; never import the Prisma client directly in routes.
 - `cli user:delete` performs a hard delete (cascading to `Session`/`Account`) rather than a soft delete. This is intentional: `User`, `Session`, and `Account` are Better-Auth-managed tables, and Better Auth's own queries (sign-in, session lookup) don't know about a `deletedAt` column, so a soft-deleted user would still be able to authenticate unless Better Auth's queries were also patched to filter it — a larger change than the CLI command warrants. If soft delete becomes a real requirement, it needs to be implemented at the Better Auth integration layer, not just the schema.
 
