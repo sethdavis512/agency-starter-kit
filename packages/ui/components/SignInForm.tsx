@@ -30,7 +30,12 @@ export function SignInForm({ onSuccess, onError }: SignInFormProps) {
             onSuccess?.();
           },
           onError: (ctx) => {
-            const errorMsg = ctx.error.message || "Sign in failed";
+            // With REQUIRE_EMAIL_VERIFICATION=1 Better Auth re-sends the
+            // verification link before rejecting the sign-in.
+            const errorMsg =
+              ctx.error.code === "EMAIL_NOT_VERIFIED"
+                ? "Your email isn't verified yet. We've sent you a new verification link."
+                : ctx.error.message || "Sign in failed";
             setError(errorMsg);
             onError?.(errorMsg);
           },
@@ -85,7 +90,10 @@ export function SignInForm({ onSuccess, onError }: SignInFormProps) {
               {loading ? "Signing in..." : "Sign In"}
             </Button>
           </div>
-          <div className="text-center text-sm">
+          <div className="flex flex-col items-center gap-2 text-center text-sm">
+            <AppLink to="/forgot-password" variant="dark">
+              Forgot password?
+            </AppLink>
             <AppLink to="/sign-up" variant="dark">
               Don't have an account? Sign up
             </AppLink>

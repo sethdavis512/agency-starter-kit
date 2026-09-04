@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { EMAIL_OUTBOX_FILE } from "./e2e/helpers/email";
 
 const isCI = Boolean(process.env.CI);
 const artifactSuffix = process.env.PLAYWRIGHT_ARTIFACT_SUFFIX?.trim();
@@ -10,6 +11,15 @@ const outputDir = artifactSuffix
   : "test-results";
 const reuseExistingServer =
   process.env.PLAYWRIGHT_REUSE_SERVER === "1" && !isCI;
+
+// Force the console email transport (no real mail, even if a developer has
+// RESEND_API_KEY in their shell), mirror each message to the outbox file the
+// specs read, and keep sign-in free of the verification gate.
+const emailEnv = {
+  RESEND_API_KEY: "",
+  EMAIL_OUTBOX_FILE,
+  REQUIRE_EMAIL_VERIFICATION: "0",
+};
 
 export default defineConfig({
   testDir: "./e2e",
@@ -55,6 +65,7 @@ export default defineConfig({
       reuseExistingServer,
       timeout: 120_000,
       env: {
+        ...emailEnv,
         BETTER_AUTH_URL: process.env.BETTER_AUTH_URL ?? "http://localhost:5520",
       },
     },
@@ -65,6 +76,7 @@ export default defineConfig({
       reuseExistingServer,
       timeout: 120_000,
       env: {
+        ...emailEnv,
         BETTER_AUTH_URL: process.env.BETTER_AUTH_URL ?? "http://localhost:5510",
       },
     },

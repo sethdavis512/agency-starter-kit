@@ -31,6 +31,22 @@ bun run dev
 
 Docker is optional — if you already have a `DATABASE_URL`, skip `db:up` and just set it in the three `.env` files. Stop the local database with `bun run db:down` (data persists in a named volume).
 
+### Environment variables
+
+Each app's `.env.example` documents these; the runtime ones go in `apps/portal/.env` and `apps/admin/.env`, and `DATABASE_URL` also in `packages/database/.env`.
+
+| Variable                     | Required              | Purpose                                                                                                                                                  |
+| ---------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`               | Yes (build + runtime) | Postgres connection string for Prisma.                                                                                                                   |
+| `BETTER_AUTH_URL`            | Yes                   | Public base URL of the app (`http://localhost:5520` / `5510` locally).                                                                                   |
+| `BETTER_AUTH_SECRET`         | Yes (deployed)        | Signing secret, `openssl rand -base64 32`.                                                                                                               |
+| `TRUSTED_ORIGINS`            | Deployed              | Extra comma-separated origins for the CSRF check.                                                                                                        |
+| `RESEND_API_KEY`             | No                    | Send password-reset and verification email through [Resend](https://resend.com). Unset → messages and their links are printed to the server log instead. |
+| `EMAIL_FROM`                 | With `RESEND_API_KEY` | Sender address, e.g. `Agency Starter Kit <no-reply@example.com>` (a domain verified in Resend).                                                          |
+| `REQUIRE_EMAIL_VERIFICATION` | No (default `0`)      | Set to `1` to block sign-in until the emailed verification link is clicked.                                                                              |
+
+Password reset works out of the box with no email provider: request a link at `/forgot-password`, copy it from the dev server's stdout, and open it to land on `/reset-password`.
+
 Schema changes live in `packages/database/prisma/migrations/`. After editing
 `schema.prisma`, run `bun run cli db:setup` again (or `bunx prisma migrate dev`
 from `packages/database/`) to create and apply a new migration. `db:setup` only

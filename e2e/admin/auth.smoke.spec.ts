@@ -55,6 +55,20 @@ test.describe("admin auth smoke", () => {
     await signOut(page);
   });
 
+  test("serves the password reset routes", async ({ page }) => {
+    await page.goto("/sign-in");
+    await page.getByRole("link", { name: "Forgot password?" }).click();
+    await expect(page).toHaveURL(/\/forgot-password$/);
+    await expect(
+      page.getByRole("heading", { name: "Forgot Password" }),
+    ).toBeVisible();
+
+    await page.goto("/reset-password?error=INVALID_TOKEN");
+    await expect(
+      page.getByText("This password reset link is invalid or has expired."),
+    ).toBeVisible();
+  });
+
   test("does not expose a sign-up route", async ({ page }) => {
     const response = await page.goto("/sign-up");
 

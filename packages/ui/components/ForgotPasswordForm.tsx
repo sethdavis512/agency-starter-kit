@@ -6,18 +6,23 @@ import { Input } from "./Input";
 import { FieldRoot, FieldLabel } from "./Field";
 import { AppLink } from "./AppLink";
 
-interface SignUpFormProps {
-  onSuccess?: () => void;
+interface ForgotPasswordFormProps {
+  /**
+   * App route the emailed link lands on. Better Auth redirects there with
+   * `?token=` (valid) or `?error=INVALID_TOKEN` (expired/unknown).
+   */
+  redirectTo?: string;
   onError?: (error: string) => void;
 }
 
-export function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
-  const [name, setName] = useState("");
+export function ForgotPasswordForm({
+  redirectTo = "/reset-password",
+  onError,
+}: ForgotPasswordFormProps) {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [needsVerification, setNeedsVerification] = useState(false);
+  const [sent, setSent] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,20 +30,14 @@ export function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
     setLoading(true);
 
     try {
-      await authClient.signUp.email(
-        { name, email, password, callbackURL: "/dashboard" },
+      await authClient.requestPasswordReset(
+        { email, redirectTo },
         {
-          onSuccess: (ctx) => {
-            // With REQUIRE_EMAIL_VERIFICATION=1 Better Auth creates the user
-            // but no session (`token` is null) and emails a verification link.
-            if (ctx.data?.token === null) {
-              setNeedsVerification(true);
-              return;
-            }
-            onSuccess?.();
+          onSuccess: () => {
+            setSent(true);
           },
           onError: (ctx) => {
-            const errorMsg = ctx.error.message || "Sign up failed";
+            const errorMsg = ctx.error.message || "Could not send a reset link";
             setError(errorMsg);
             onError?.(errorMsg);
           },
@@ -56,14 +55,14 @@ export function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
       <Card className="max-w-md w-full space-y-8 p-8">
         <div>
           <h2 className="text-center text-3xl font-bold text-neutral">
-            Sign Up
+            Forgot Password
           </h2>
         </div>
-        {needsVerification ? (
+        {sent ? (
           <div className="mt-8 space-y-6">
             <p className="text-center text-sm text-neutral">
-              Check your inbox — we sent a verification link to{" "}
-              <strong>{email}</strong>. Verify your email to finish signing up.
+              If an account exists for <strong>{email}</strong>, a password
+              reset link is on its way. Check your inbox.
             </p>
             <div className="text-center text-sm">
               <AppLink to="/sign-in" variant="dark">
@@ -77,15 +76,10 @@ export function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
               <div className="text-danger text-sm text-center">{error}</div>
             )}
             <div className="space-y-4">
-              <FieldRoot>
-                <FieldLabel>Name</FieldLabel>
-                <Input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </FieldRoot>
+              <p className="text-sm text-neutral/60">
+                Enter the email for your account and we'll send you a link to
+                reset your password.
+              </p>
               <FieldRoot>
                 <FieldLabel>Email</FieldLabel>
                 <Input
@@ -93,16 +87,6 @@ export function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                />
-              </FieldRoot>
-              <FieldRoot>
-                <FieldLabel>Password</FieldLabel>
-                <Input
-                  type="password"
-                  required
-                  minLength={8}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                 />
               </FieldRoot>
             </div>
@@ -113,12 +97,12 @@ export function SignUpForm({ onSuccess, onError }: SignUpFormProps) {
                 className="w-full"
                 size="md"
               >
-                {loading ? "Signing up..." : "Sign Up"}
+                {loading ? "Sending..." : "Send reset link"}
               </Button>
             </div>
             <div className="text-center text-sm">
               <AppLink to="/sign-in" variant="dark">
-                Already have an account? Sign in
+                Back to sign in
               </AppLink>
             </div>
           </form>
