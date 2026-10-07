@@ -6,7 +6,10 @@
         ".": "./index.ts",
         "./icons": "./icons.ts",
         "./date": "./date.ts",
-        "./brand": "./brand.ts"
+        "./brand": "./brand.ts",
+        "./logger": "./logger.ts",
+        "./nonce": "./nonce.ts",
+        "./security-headers": "./security-headers.ts"
     },
     "license": "MIT",
     "scripts": {
@@ -18,10 +21,14 @@
         "@repo/eslint-config": "*",
         "@repo/typescript-config": "*",
         "eslint": "^10.5.0",
-        "typescript": "~6.0.0"
+        "typescript": "~6.0.0",
+        "@types/react": "^19.2.17"
     },
     "dependencies": {
         "lucide-react": "^1.18.0",
         "tiny-invariant": "^1.3.3"
+    },
+    "peerDependencies": {
+        "react": "^19.2.7"
     }
 }
